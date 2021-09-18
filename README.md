@@ -1,10 +1,20 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/drpsychick/go-alexa-lambda)](https://goreportcard.com/report/github.com/drpsychick/go-alexa-lambda)
+[![Build Status](https://app.travis-ci.com/DrPsychick/go-alexa-lambda.svg?branch=master)](https://app.travis-ci.com/DrPsychick/go-alexa-lambda)
+[![Coverage Status](https://coveralls.io/repos/github/DrPsychick/go-alexa-lambda/badge.svg?branch=master)](https://coveralls.io/github/DrPsychick/go-alexa-lambda?branch=master)
+[![license](https://img.shields.io/github/license/drpsychick/go-alexa-lambda.svg)](https://github.com/drpsychick/go-alexa-lambda/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/drpsychick/go-alexa-lambda.svg)](https://github.com/drpsychick/go-alexa-lambda)
+[![Paypal](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FTXDN7LCDWUEA&source=url)
+[![GitHub Sponsor](https://img.shields.io/badge/github-sponsor-blue?logo=github)](https://github.com/sponsors/DrPsychick)
+
 # go-alexa-lambda
 Alexa golang library to generate skill + interaction model as well as serve requests with lambda or as a server.
 The packages can also be used standalone as a request/response abstraction for Alexa requests.
 
 # Purpose
-
-
+The Alexa skill and interaction model is tightly coupled with the actual intents a lambda function will process.
+As developing a skill with a golang backend impacts the skill definition in many cases and they share localization scope,
+this package allows defining and generating the skill and model for deployment and using the same source (with intents, localization) to
+build the lambda function that responds to requests from Alexa.
 
 # Usage
 ## Build skill and interaction model
