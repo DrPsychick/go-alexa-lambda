@@ -2,7 +2,7 @@ package ssml
 
 import (
 	"fmt"
-	"github.com/drpsychick/alexa-go-lambda"
+	"github.com/drpsychick/go-alexa-lambda"
 	"testing"
 )
 

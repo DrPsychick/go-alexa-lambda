@@ -14,8 +14,8 @@ package main
 
 import(
 	"log"
-	"github.com/drpsychick/alexa-go-lambda/l10n"
-	"github.com/drpsychick/alexa-go-lambda/skill"
+	"github.com/drpsychick/go-alexa-lambda/l10n"
+	"github.com/drpsychick/go-alexa-lambda/skill"
 )
 
 // Configure locale registry.

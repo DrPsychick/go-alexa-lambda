@@ -2,7 +2,7 @@ package l10n_test
 
 import (
 	"bou.ke/monkey"
-	"github.com/drpsychick/alexa-go-lambda/l10n"
+	"github.com/drpsychick/go-alexa-lambda/l10n"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"

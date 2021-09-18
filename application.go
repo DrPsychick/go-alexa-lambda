@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/drpsychick/alexa-go-lambda/l10n"
+	"github.com/drpsychick/go-alexa-lambda/l10n"
 	"github.com/hamba/pkg/log"
 	"github.com/hamba/pkg/stats"
 )

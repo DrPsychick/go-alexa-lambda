@@ -1,7 +1,7 @@
 package alexa
 
 import (
-	"github.com/drpsychick/alexa-go-lambda/ssml"
+	"github.com/drpsychick/go-alexa-lambda/ssml"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"

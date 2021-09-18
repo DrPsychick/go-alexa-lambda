@@ -3,9 +3,9 @@ package skill_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/drpsychick/alexa-go-lambda/l10n"
-	"github.com/drpsychick/alexa-go-lambda/skill"
-	"github.com/drpsychick/alexa-go-lambda/ssml"
+	"github.com/drpsychick/go-alexa-lambda/l10n"
+	"github.com/drpsychick/go-alexa-lambda/skill"
+	"github.com/drpsychick/go-alexa-lambda/ssml"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

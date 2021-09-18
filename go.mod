@@ -5,7 +5,6 @@ go 1.17
 require (
 	bou.ke/monkey v1.0.2
 	github.com/aws/aws-lambda-go v1.26.0
-	github.com/drpsychick/alexa-go-cloudformation-demo v0.0.0-20210918164009-119f96729df9
 	github.com/hamba/pkg v1.4.0
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.7.0

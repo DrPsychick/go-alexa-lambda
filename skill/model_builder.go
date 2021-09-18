@@ -4,7 +4,7 @@ package skill
 import (
 	"fmt"
 
-	"github.com/drpsychick/alexa-go-lambda/l10n"
+	"github.com/drpsychick/go-alexa-lambda/l10n"
 )
 
 // modelBuilder builds an alexa.Model instance for a locale.

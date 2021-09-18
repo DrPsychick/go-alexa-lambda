@@ -1,8 +1,8 @@
 package skill_test
 
 import (
-	"github.com/drpsychick/alexa-go-lambda/l10n"
-	"github.com/drpsychick/alexa-go-lambda/skill"
+	"github.com/drpsychick/go-alexa-lambda/l10n"
+	"github.com/drpsychick/go-alexa-lambda/skill"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
