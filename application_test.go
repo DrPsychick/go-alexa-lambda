@@ -11,8 +11,8 @@ import (
 func initL10n() {
 	en := &l10n.Locale{Name: "en-US", TextSnippets: l10n.Snippets{"key": {"value1", "value2"}}}
 	de := &l10n.Locale{Name: "de-DE", TextSnippets: l10n.Snippets{"foo": {"bar", "foo"}}}
-	l10n.DefaultRegistry.Register(en) // default
-	l10n.DefaultRegistry.Register(de)
+	l10n.DefaultRegistry.Register(en) //nolint:errcheck
+	l10n.DefaultRegistry.Register(de) //nolint:errcheck
 }
 
 func TestCheckForLocaleError(t *testing.T) {

@@ -658,6 +658,7 @@ func testHelper(t *testing.T, name string, manifest []byte) []byte {
 	err := json.Unmarshal(manifest, &skill)
 	assert.Nil(t, err, "Unmarshal of %s returned error: %s", name, err)
 	res, err := json.Marshal(skill)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, string(res), "Marshal of %s must return JSON", name)
 	return res
 }

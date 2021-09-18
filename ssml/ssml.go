@@ -59,7 +59,9 @@ const (
 // UseEmotion wraps the text in an emotion tag.
 func UseEmotion(name AmazonEmotion, intensity AmazonEmotionIntensity, text string) string {
 	// <amazon:emotion name="excited" intensity="medium">
-	return `<amazon:emotion name="` + string(name) + `" intensity="` + string(intensity) + `">` + text + `</amazon:emotion>`
+	return fmt.Sprintf(`<amazon:emotion name="%s" intensity="%s">%s</amazon:emotion>`,
+		string(name), string(intensity), text,
+	)
 }
 
 // UseAudio uses an URL for an MP3 file to play.
@@ -212,7 +214,7 @@ const (
 	SayAsInterpretAsDigits SayAsInterpretAs = "digits"
 	// SayAsInterpretAsFraction interprets the value as a fraction. This works for 3/20 as well as 1+1/2.
 	SayAsInterpretAsFraction SayAsInterpretAs = "fraction"
-	// SayAsInterpretAsUnit interprets a value as a measurement. Either a number or fraction followed by a unit or just a unit.
+	// SayAsInterpretAsUnit interprets a value as a measurement. Either a number or fraction including unit or just a unit.
 	SayAsInterpretAsUnit SayAsInterpretAs = "unit"
 	// SayAsInterpretAsDate interprets the value as a date. Specify the format with the format attribute.
 	SayAsInterpretAsDate SayAsInterpretAs = "date"

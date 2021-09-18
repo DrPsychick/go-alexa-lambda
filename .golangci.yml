@@ -1,0 +1,53 @@
+run:
+  tests: false
+  deadline: 5m
+
+linters-settings:
+  cyclop:
+    max-complexity: 12
+    skip-tests: true
+  gofumpt:
+    extra-rules: true
+  godox:
+    keywords:
+      - HACK
+      - FIXME
+      - BUG
+
+linters:
+  enable-all: true
+  disable:
+    - interfacer # deprecated
+    - scopelint # deprecated
+    - maligned # deprecated
+    - golint # deprecated
+    - exhaustive
+    - exhaustivestruct
+    - forcetypeassert
+    - gochecknoglobals
+    - gochecknoinits
+    - goerr113
+    - gomnd
+    - nlreturn
+    - wrapcheck
+    - wsl
+    - tagliatelle
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    # file permission 600
+    - text: "G306:"
+      linters:
+        - gosec
+    # directory permissions 750
+    - text: "G301:"
+      linters:
+        - gosec
+    - path: ssml
+      linters:
+        - lll
+#    - text: "G404:"
+##      path: pkg/alexa/l10n/
+#      linters:
+#        - gosec
