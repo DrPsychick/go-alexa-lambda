@@ -162,6 +162,15 @@ func (m *modelBuilder) Intent(name string) *modelIntentBuilder {
 	return m.intents[name]
 }
 
+// Intent returns the list of intent names.
+func (m *modelBuilder) Intents() []string {
+	list := make([]string, 0, len(m.intents))
+	for n := range m.intents {
+		list = append(list, n)
+	}
+	return list
+}
+
 // Type returns the named type.
 func (m *modelBuilder) Type(name string) *modelTypeBuilder {
 	return m.types[name]
