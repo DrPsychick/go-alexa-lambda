@@ -6,14 +6,14 @@ import (
 	"fmt"
 
 	"github.com/drpsychick/go-alexa-lambda/l10n"
-	"github.com/hamba/pkg/log"
-	"github.com/hamba/pkg/stats"
+	log "github.com/hamba/logger/v2"
+	stats "github.com/hamba/statter/v2"
 )
 
 // Application defines the interface used of the app.
 type Application interface {
-	log.Loggable
-	stats.Statable
+	Logger() *log.Logger
+	Statter() *stats.Statter
 }
 
 // Response wraps the data needed for a skill response.
