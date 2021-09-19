@@ -79,7 +79,6 @@ func main() {
 		res, _ := jsoniter.MarshalIndent(m, "", "  ")
 		log.Printf("Locale %s:\n%s", l, res)
 	}
-
 }
 ```
 
@@ -128,7 +127,7 @@ func main() {
 	mux.HandleIntent(alexa.HelpIntent, handleHelp(sb))
 	
 	// actually, one would call `alexa.Serve(mux)`
-	// but we want to pass a request and get a response
+	// but for this demo, we want to pass a request and get a response
 	s := &alexa.Server{Handler: mux}
 	ctx := context.Background()
 	response, err := s.Invoke(ctx, []byte(request))
@@ -144,11 +143,11 @@ func main() {
 
 ## Project template
 To give you a head start, check out the template project:
-* `go-alexa-lambda-template` : generate skill and deploy it including lambda with cloudformation.
+* [go-alexa-lambda-template](https://github.com/DrPsychick/go-alexa-lambda-template) : generate skill and deploy it including lambda with cloudformation.
 
 ### Create your own project based on the template
 ```shell
-git clone https://github.com/drpsychick/go-alexa-lambda-template
+git clone https://github.com/DrPsychick/go-alexa-lambda-template.git
 mv go-alexa-lambda-template alexa-project
 cd alexa-project
 rm -rf .git
