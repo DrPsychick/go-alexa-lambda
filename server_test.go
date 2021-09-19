@@ -28,7 +28,7 @@ func TestServer(t *testing.T) {
 }
 
 func TestHandler(t *testing.T) {
-	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) { b.WithSimpleCard("title", "") })
 
 	mux.HandleRequestType(TypeLaunchRequest, h)
@@ -60,7 +60,7 @@ func TestHandler(t *testing.T) {
 }
 
 func TestHandler_Errors(t *testing.T) {
-	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 
 	r := &RequestEnvelope{
 		Request: &Request{
@@ -80,7 +80,7 @@ func TestHandler_Errors(t *testing.T) {
 }
 
 func TestHandleRequestType_IntentRequest(t *testing.T) {
-	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {})
 
 	mux.HandleRequestTypeFunc(TypeIntentRequest, h)
@@ -89,7 +89,7 @@ func TestHandleRequestType_IntentRequest(t *testing.T) {
 }
 
 func TestHandleIntentFunc(t *testing.T) {
-	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {})
 
 	mux.HandleIntentFunc("Intent", h)
@@ -100,7 +100,7 @@ func TestHandleIntentFunc(t *testing.T) {
 }
 
 func TestServe(t *testing.T) {
-	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	r := &RequestEnvelope{}
 	b := &ResponseBuilder{}
 

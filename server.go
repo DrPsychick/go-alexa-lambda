@@ -64,14 +64,14 @@ func Serve(h Handler) error {
 // ServeMux is an Alexa request multiplexer.
 type ServeMux struct {
 	mu          sync.RWMutex
-	logger      log.Logger
+	logger      *log.Logger
 	types       map[RequestType]Handler
 	intents     map[string]Handler
 	intentSlots map[string]string
 }
 
 // NewServerMux creates a new server mux.
-func NewServerMux(log log.Logger) *ServeMux {
+func NewServerMux(log *log.Logger) *ServeMux {
 	return &ServeMux{
 		logger:      log,
 		types:       map[RequestType]Handler{},
@@ -81,7 +81,7 @@ func NewServerMux(log log.Logger) *ServeMux {
 }
 
 // Logger returns the application logger.
-func (m *ServeMux) Logger() log.Logger {
+func (m *ServeMux) Logger() *log.Logger {
 	return m.logger
 }
 
@@ -172,7 +172,7 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 }
 
 // DefaultServerMux is the default mux.
-var DefaultServerMux = NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
+var DefaultServerMux = NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 
 // HandleRequestType registers the handler for the given request type on the DefaultServeMux.
 //

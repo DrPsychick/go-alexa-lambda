@@ -12,8 +12,8 @@ import (
 
 // Application defines the interface used of the app.
 type Application interface {
-	Logger() log.Logger
-	Statter() stats.Statter
+	Logger() *log.Logger
+	Statter() *stats.Statter
 }
 
 // Response wraps the data needed for a skill response.
