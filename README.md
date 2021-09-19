@@ -84,11 +84,62 @@ func main() {
 ```
 
 ## Respond to alexa requests with lambda
+Run it on go playground: https://play.golang.org/p/fRrzn_kmaBi
 ```go
+package main
 
+import (
+	"os"
+	"context"
+	alexa "github.com/drpsychick/go-alexa-lambda"
+	"github.com/drpsychick/go-alexa-lambda/skill"
+	log "github.com/hamba/logger/v2"
+)
+
+var request = `{
+  "version": "1.0",
+  "session": {},
+  "context": {},
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.1234",
+    "timestamp": "2016-10-27T21:06:28Z",
+    "locale": "en-US",
+    "intent": {
+      "name": "AMAZON.HelpIntent"
+    }
+  }
+}
+`
+
+func handleHelp(sb *skill.SkillBuilder) alexa.HandlerFunc {
+	sb.Model().WithIntent(alexa.HelpIntent)
+
+	return alexa.HandlerFunc(func(b *alexa.ResponseBuilder, r *alexa.RequestEnvelope) {
+		b.WithSimpleCard("Help Title", "Text explaining how it works.")
+	})
+}
+
+func main() {
+	sb := skill.NewSkillBuilder()
+	mux := alexa.NewServerMux(log.New(os.Stdout, log.ConsoleFormat(), log.Info))
+	sb.WithModel()
+
+	mux.HandleIntent(alexa.HelpIntent, handleHelp(sb))
+	
+	// actually, one would call `alexa.Serve(mux)`
+	// but we want to pass a request and get a response
+	s := &alexa.Server{Handler: mux}
+	ctx := context.Background()
+	response, err := s.Invoke(ctx, []byte(request))
+	if err != nil {
+		mux.Logger().Error(err.Error())
+	}
+	mux.Logger().Info(string(response))
+}
 ```
 
-## Projects using `go-alexa-lambda`
+# Projects using `go-alexa-lambda`
 * [alexa-go-cloudformation-demo](https://github.com/DrPsychick/alexa-go-cloudformation-demo) : the demo project that lead to developing this library. A fully automated build and deploy of an Alexa skill including lambda function via Cloudformation.
 
 ## Project template
@@ -121,6 +172,7 @@ CF_STACK_NAME= # skill-stack
 KEEP_STACK= # if empty, the CF stack will be deleted after deploy (for tests)
 ```
 
+# References
 ### Links
 * https://developer.amazon.com/docs/custom-skills/dialog-interface-reference.html
 * multiple intents in one dialog: https://developer.amazon.com/docs/custom-skills/dialog-interface-reference.html#pass-a-new-intent
