@@ -2,7 +2,7 @@ package alexa
 
 import (
 	ctx "context"
-	"github.com/hamba/pkg/log"
+	log "github.com/hamba/logger/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"
 	"reflect"
@@ -16,9 +16,9 @@ func TestServer(t *testing.T) {
 			func(b *ResponseBuilder, r *RequestEnvelope) {},
 		),
 	}
-	ctx := ctx.Background()
+	context := ctx.Background()
 
-	res, err := s.Invoke(ctx, []byte("{}"))
+	res, err := s.Invoke(context, []byte("{}"))
 	resp := &ResponseEnvelope{}
 	err2 := jsoniter.Unmarshal(res, resp)
 
@@ -28,7 +28,7 @@ func TestServer(t *testing.T) {
 }
 
 func TestHandler(t *testing.T) {
-	mux := NewServerMux(log.Null)
+	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
 	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) { b.WithSimpleCard("title", "") })
 
 	mux.HandleRequestType(TypeLaunchRequest, h)
@@ -60,7 +60,7 @@ func TestHandler(t *testing.T) {
 }
 
 func TestHandler_Errors(t *testing.T) {
-	mux := NewServerMux(log.Null)
+	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
 
 	r := &RequestEnvelope{
 		Request: &Request{
@@ -80,7 +80,7 @@ func TestHandler_Errors(t *testing.T) {
 }
 
 func TestHandleRequestType_IntentRequest(t *testing.T) {
-	mux := NewServerMux(log.Null)
+	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
 	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {})
 
 	mux.HandleRequestTypeFunc(TypeIntentRequest, h)
@@ -89,7 +89,7 @@ func TestHandleRequestType_IntentRequest(t *testing.T) {
 }
 
 func TestHandleIntentFunc(t *testing.T) {
-	mux := NewServerMux(log.Null)
+	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
 	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {})
 
 	mux.HandleIntentFunc("Intent", h)
@@ -100,7 +100,7 @@ func TestHandleIntentFunc(t *testing.T) {
 }
 
 func TestServe(t *testing.T) {
-	mux := NewServerMux(log.Null)
+	mux := NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
 	r := &RequestEnvelope{}
 	b := &ResponseBuilder{}
 

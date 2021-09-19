@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/hamba/pkg/log"
+	log "github.com/hamba/logger/v2"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -172,7 +172,7 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 }
 
 // DefaultServerMux is the default mux.
-var DefaultServerMux = NewServerMux(log.Null)
+var DefaultServerMux = NewServerMux(*log.New(nil, log.ConsoleFormat(), log.Info))
 
 // HandleRequestType registers the handler for the given request type on the DefaultServeMux.
 //
