@@ -7,7 +7,7 @@ import (
 
 	"github.com/drpsychick/go-alexa-lambda/l10n"
 	log "github.com/hamba/logger/v2"
-	stats "github.com/hamba/statter"
+	stats "github.com/hamba/statter/v2"
 )
 
 // Application defines the interface used of the app.
