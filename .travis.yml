@@ -10,6 +10,7 @@ env:
     - GOARCH=amd64
     - GOOS=linux
     - GOLANGCI_LINTER_VERSION=v1.42.0
+    - CGO_ENABLED=1
     # COVERALLS_TOKEN
 
 before_script:
@@ -20,5 +21,5 @@ before_script:
 script:
   - golangci-lint run
   - go vet ./...
-  - go test -gcflags=-l -covermode=count -coverprofile=profile.cov ./...
+  - go test -race -gcflags=-l -covermode=count -coverprofile=profile.cov ./...
   - goveralls -coverprofile=profile.cov -service=travis-ci
