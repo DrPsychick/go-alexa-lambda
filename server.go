@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	log "github.com/hamba/logger/v2"
+	lctx "github.com/hamba/logger/v2/ctx"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -160,7 +161,7 @@ func fallbackHandler(err error) HandlerFunc {
 // Serve serves the matched handler.
 func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 	json, _ := jsoniter.Marshal(r)
-	m.logger.Debug(string(json))
+	m.logger.Debug("request", lctx.Str("json", string(json)))
 	h, err := m.Handler(r)
 	if err != nil {
 		h = fallbackHandler(err)
@@ -168,7 +169,7 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 
 	h.Serve(b, r)
 	json, _ = jsoniter.Marshal(b.Build())
-	m.logger.Debug(string(json))
+	m.logger.Debug("response", lctx.Str("json", string(json)))
 }
 
 // DefaultServerMux is the default mux.

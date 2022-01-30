@@ -131,6 +131,21 @@ func (m *modelBuilder) WithConfirmationSlotPrompt(intent, slot string) *modelBui
 	return m
 }
 
+// WithIntentConfirmationPrompt does nothing.
+//func (m *modelBuilder) WithIntentConfirmationPrompt(intent string) *modelBuilder {
+//	// TODO: WithIntentConfirmationPrompt
+//	// add a prompt to the model `model.WithIntentConfirmationPrompt(intent, slot)`
+//	// add variations `model.IntentConfirmationPrompt(intent, slot).WithVariation("PlainText")`
+//	// https://developer.amazon.com/docs/custom-skills/define-the-dialog-to-collect-and-confirm-required-information.html#intent-confirmation
+//	// https://developer.amazon.com/en-US/docs/alexa/custom-skills/dialog-interface-reference.html#confirmintent
+//	p := NewIntentConfirmationPromptBuilder(intent).
+//		WithLocaleRegistry(m.registry)
+//	m.prompts[p.id] = p
+//
+//
+//	return m
+//}
+
 // WithValidationSlotPrompt creates and sets a validation prompt for a slot dialog.
 func (m *modelBuilder) WithValidationSlotPrompt(slot, t string, valuesKey ...string) *modelBuilder {
 	// slot must exist!
@@ -351,6 +366,16 @@ func (i *modelIntentBuilder) WithConfirmation(c bool) *modelIntentBuilder {
 	return i
 }
 
+// WithIntentConfirmationPrompt does nothing.
+func (i *modelIntentBuilder) WithIntentConfirmationPrompt(prompt string) *modelIntentBuilder {
+	// TODO: WithIntentConfirmationPrompt
+	// add a prompt to the model `model.WithIntentConfirmationPrompt(intent, slot)`
+	// add variations `model.IntentConfirmationPrompt(intent, slot).WithVariation("PlainText")`
+	// https://developer.amazon.com/docs/custom-skills/define-the-dialog-to-collect-and-confirm-required-information.html#intent-confirmation
+	// https://developer.amazon.com/en-US/docs/alexa/custom-skills/dialog-interface-reference.html#confirmintent
+	return i
+}
+
 // BuildLanguageIntent generates a ModelIntent for the locale.
 func (i *modelIntentBuilder) BuildLanguageIntent(locale string) (ModelIntent, error) {
 	loc, err := i.registry.Resolve(locale)
@@ -464,15 +489,6 @@ func (s *modelSlotBuilder) WithElicitation(e bool) *modelSlotBuilder {
 func (s *modelSlotBuilder) WithElicitationPrompt(id string) *modelSlotBuilder {
 	s.withElicitation = true
 	s.elicitationPrompt = id
-	return s
-}
-
-// WithIntentConfirmationPrompt does nothing.
-func (s *modelSlotBuilder) WithIntentConfirmationPrompt(prompt string) *modelSlotBuilder {
-	// TODO: WithIntentConfirmationPrompt
-	// https://developer.amazon.com/docs/custom-skills/
-	// -> define-the-dialog-to-collect-and-confirm-required-information.html#intent-confirmation
-	// https://developer.amazon.com/en-US/docs/alexa/custom-skills/dialog-interface-reference.html#confirmintent
 	return s
 }
 

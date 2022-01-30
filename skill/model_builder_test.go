@@ -373,13 +373,13 @@ func TestModelSlotBuilder_WithPrompt(t *testing.T) {
 }
 
 // modelSlotBuilder with intent confirmation prompt is covered.
-func TestModelSlotBuilder_WithIntentConfirmationPrompt(t *testing.T) {
-	msb := skill.NewModelSlotBuilder("MyIntent", "MySlot", "SlotType")
-
-	msb2 := msb.WithIntentConfirmationPrompt("foo")
-
-	assert.Equal(t, msb, msb2)
-}
+//func TestModelSlotBuilder_WithIntentConfirmationPrompt(t *testing.T) {
+//	msb := skill.NewModelSlotBuilder("MyIntent", "MySlot", "SlotType")
+//
+//	msb2 := msb.WithIntentConfirmationPrompt("foo")
+//
+//	assert.Equal(t, msb, msb2)
+//}
 
 // TODO: test modelValidationRulesBuilder
 
