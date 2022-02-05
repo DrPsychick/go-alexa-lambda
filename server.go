@@ -1,9 +1,13 @@
 package alexa
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"sync"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,6 +19,7 @@ import (
 // Handler represents an alexa request handler.
 type Handler interface {
 	Serve(*ResponseBuilder, *RequestEnvelope)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 // HandlerFunc is an adapter allowing a function to be used as a handler.
@@ -23,6 +28,26 @@ type HandlerFunc func(*ResponseBuilder, *RequestEnvelope)
 // Serve serves the request.
 func (fn HandlerFunc) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 	fn(b, r)
+}
+
+// ServeHTTP serves a HTTP request.
+func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	payload, _ := ioutil.ReadAll(r.Body)
+
+	req := &RequestEnvelope{}
+	if err := jsoniter.Unmarshal(payload, req); err != nil {
+		panic("failed to unmarshal request")
+	}
+	builder := &ResponseBuilder{}
+	fn(builder, req)
+
+	resp, err := jsoniter.Marshal(builder.Build())
+	if err != nil {
+		panic("failed to marshal response")
+	}
+	if _, err := rw.Write(resp); err != nil {
+		panic("failed to write response")
+	}
 }
 
 // A Server defines parameters for running an Alexa server.
@@ -170,6 +195,28 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 	h.Serve(b, r)
 	json, _ = jsoniter.Marshal(b.Build())
 	m.logger.Debug("response", lctx.Str("json", string(json)))
+}
+
+// ServeHTTP dispatches the request to the handler whose
+// alexa intent matches the request URL.
+func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var buf bytes.Buffer
+	tee := io.TeeReader(r.Body, &buf)
+	payload, err := ioutil.ReadAll(tee)
+	if err != nil {
+		panic("failed to read request body")
+	}
+
+	req := &RequestEnvelope{}
+	if err := jsoniter.Unmarshal(payload, req); err != nil {
+		panic("failed to unmarshal request")
+	}
+
+	h, err := m.Handler(req)
+	if err != nil {
+		h = fallbackHandler(err)
+	}
+	h.ServeHTTP(w, r)
 }
 
 // DefaultServerMux is the default mux.
