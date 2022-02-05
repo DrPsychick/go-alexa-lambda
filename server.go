@@ -1,11 +1,9 @@
 package alexa
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"sync"
@@ -200,9 +198,7 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 // ServeHTTP dispatches the request to the handler whose
 // alexa intent matches the request URL.
 func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var buf bytes.Buffer
-	tee := io.TeeReader(r.Body, &buf)
-	payload, err := ioutil.ReadAll(tee)
+	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic("failed to read request body")
 	}
@@ -216,7 +212,17 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h = fallbackHandler(err)
 	}
-	h.ServeHTTP(w, r)
+
+	builder := &ResponseBuilder{}
+	h.Serve(builder, req)
+
+	resp, err := jsoniter.Marshal(builder.Build())
+	if err != nil {
+		panic("failed to marshal response")
+	}
+	if _, err := w.Write(resp); err != nil {
+		panic("failed to write response")
+	}
 }
 
 // DefaultServerMux is the default mux.
