@@ -31,24 +31,24 @@ func (fn HandlerFunc) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 
 // ServeHTTP serves a HTTP request.
 func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	payload, _ := ioutil.ReadAll(r.Body)
-
-	req := &RequestEnvelope{}
-	if err := jsoniter.Unmarshal(payload, req); err != nil {
-		// TODO: write error
-		panic("failed to unmarshal request")
+	req, err := parseRequest(r.Body)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Write([]byte(`{"error": "failed to parse request"}`))
+		return
 	}
+	defer func() { _ = r.Body.Close() }()
+
 	builder := &ResponseBuilder{}
 	fn(builder, req)
 
 	resp, err := jsoniter.Marshal(builder.Build())
 	if err != nil {
-		// TODO: write error
-		panic("failed to marshal response")
+		rw.WriteHeader(http.StatusInternalServerError)
+		resp = []byte(`{"error": "failed to marshal response"}`)
 	}
 	if _, err := rw.Write(resp); err != nil {
-		// TODO: only log debug -> write fails usually when client is gone, nothing we can do...
-		panic("failed to write response")
+		// do nothing
 	}
 }
 
@@ -203,7 +203,7 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 // alexa intent matches the request URL.
 func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var h Handler
-	req, err := m.parseRequest(r.Body)
+	req, err := parseRequest(r.Body)
 	if err != nil {
 		h = fallbackHandler(err)
 	} else {
@@ -212,6 +212,7 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			h = fallbackHandler(err)
 		}
 	}
+	defer func() { _ = r.Body.Close() }()
 
 	builder := &ResponseBuilder{}
 	h.Serve(builder, req)
@@ -227,7 +228,7 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (m *ServeMux) parseRequest(b io.Reader) (*RequestEnvelope, error) {
+func parseRequest(b io.Reader) (*RequestEnvelope, error) {
 	payload, err := ioutil.ReadAll(b)
 	if err != nil {
 		return nil, err
