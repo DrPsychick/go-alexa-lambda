@@ -47,9 +47,7 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		resp = []byte(`{"error": "failed to marshal response"}`)
 	}
-	if _, err := rw.Write(resp); err != nil {
-		// do nothing
-	}
+	_, _ = rw.Write(resp)
 }
 
 // A Server defines parameters for running an Alexa server.
