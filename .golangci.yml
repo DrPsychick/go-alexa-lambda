@@ -32,6 +32,8 @@ linters:
     - wrapcheck
     - wsl
     - tagliatelle
+    - varnamelen
+    - ireturn
 
 issues:
   exclude-use-default: false
