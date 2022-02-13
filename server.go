@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"sync"
@@ -34,6 +35,7 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	req := &RequestEnvelope{}
 	if err := jsoniter.Unmarshal(payload, req); err != nil {
+		// TODO: write error
 		panic("failed to unmarshal request")
 	}
 	builder := &ResponseBuilder{}
@@ -41,9 +43,11 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	resp, err := jsoniter.Marshal(builder.Build())
 	if err != nil {
+		// TODO: write error
 		panic("failed to marshal response")
 	}
 	if _, err := rw.Write(resp); err != nil {
+		// TODO: only log debug -> write fails usually when client is gone, nothing we can do...
 		panic("failed to write response")
 	}
 }
@@ -198,19 +202,15 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 // ServeHTTP dispatches the request to the handler whose
 // alexa intent matches the request URL.
 func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	payload, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		panic("failed to read request body")
-	}
-
-	req := &RequestEnvelope{}
-	if err := jsoniter.Unmarshal(payload, req); err != nil {
-		panic("failed to unmarshal request")
-	}
-
-	h, err := m.Handler(req)
+	var h Handler
+	req, err := m.parseRequest(r.Body)
 	if err != nil {
 		h = fallbackHandler(err)
+	} else {
+		h, err = m.Handler(req)
+		if err != nil {
+			h = fallbackHandler(err)
+		}
 	}
 
 	builder := &ResponseBuilder{}
@@ -218,11 +218,26 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := jsoniter.Marshal(builder.Build())
 	if err != nil {
-		panic("failed to marshal response")
+		m.logger.Error("failed to marshal response", lctx.Error("error", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		resp = []byte(`{"error": "failed to marshal response"}`)
 	}
 	if _, err := w.Write(resp); err != nil {
-		panic("failed to write response")
+		m.logger.Debug("failed to write response")
 	}
+}
+
+func (m *ServeMux) parseRequest(b io.Reader) (*RequestEnvelope, error) {
+	payload, err := ioutil.ReadAll(b)
+	if err != nil {
+		return nil, err
+	}
+
+	req := &RequestEnvelope{}
+	if err := jsoniter.Unmarshal(payload, req); err != nil {
+		return nil, err
+	}
+	return req, nil
 }
 
 // DefaultServerMux is the default mux.
