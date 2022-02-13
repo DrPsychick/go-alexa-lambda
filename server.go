@@ -34,7 +34,7 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	req, err := parseRequest(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
-		rw.Write([]byte(`{"error": "failed to parse request"}`))
+		_, _ = rw.Write([]byte(`{"error": "failed to parse request"}`))
 		return
 	}
 	defer func() { _ = r.Body.Close() }()
