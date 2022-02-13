@@ -9,14 +9,14 @@ env:
     - GO111MODULE=on
     - GOARCH=amd64
     - GOOS=linux
-    - GOLANGCI_LINTER_VERSION=v1.42.0
+    - GOLANGCI_LINTER_VERSION=v1.44.0
     - CGO_ENABLED=1
     # COVERALLS_TOKEN
 
 before_script:
   - go mod download
   - go get github.com/mattn/goveralls
-  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin $GOLANGCI_LINTER_VERSION
+  - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin $GOLANGCI_LINTER_VERSION
 
 script:
   - golangci-lint run

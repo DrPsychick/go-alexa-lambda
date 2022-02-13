@@ -380,6 +380,14 @@ func (r *RequestEnvelope) SessionID() string {
 	return r.Session.SessionID
 }
 
+// SessionUser returns the user in the session or returns an error if no user exists.
+func (r *RequestEnvelope) SessionUser() (*ContextUser, error) {
+	if r.Session == nil || r.Session.User == nil {
+		return nil, &NotFoundError{"Session.User", ""}
+	}
+	return r.Session.User, nil
+}
+
 // ContextSystemPerson describes the person who is making the request to Alexa
 //
 // This is the user recognized by voice, not account from which the request came.

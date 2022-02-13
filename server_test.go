@@ -1,10 +1,14 @@
 package alexa
 
 import (
+	"bytes"
 	ctx "context"
 	log "github.com/hamba/logger/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"runtime"
 	"testing"
@@ -25,6 +29,51 @@ func TestServer(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NoError(t, err2)
 	assert.NotEmpty(t, resp)
+}
+
+func TestMuxServeHTTP(t *testing.T) {
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
+	rw := httptest.NewRecorder()
+	b := ioutil.NopCloser(bytes.NewReader([]byte(`{}`)))
+	r := &http.Request{Method: http.MethodGet, Body: b}
+
+	mux.ServeHTTP(rw, r)
+
+	res, _ := ioutil.ReadAll(rw.Result().Body)
+	resp := &ResponseEnvelope{}
+	err := jsoniter.Unmarshal(res, resp)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "error")
+
+	rw = httptest.NewRecorder()
+	b = ioutil.NopCloser(bytes.NewReader([]byte(`foo`)))
+	r = &http.Request{Method: http.MethodGet, Body: b}
+
+	mux.ServeHTTP(rw, r)
+
+	res, _ = ioutil.ReadAll(rw.Result().Body)
+	resp = &ResponseEnvelope{}
+	err = jsoniter.Unmarshal(res, resp)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "error")
+
+	rw = httptest.NewRecorder()
+	req := &RequestEnvelope{Request: &Request{Type: TypeIntentRequest, Intent: Intent{Name: HelpIntent}}}
+	content, err := jsoniter.Marshal(req)
+	assert.NoError(t, err)
+	b = ioutil.NopCloser(bytes.NewReader(content))
+	r = &http.Request{Method: http.MethodGet, Body: b}
+
+	mux.ServeHTTP(rw, r)
+
+	res, _ = ioutil.ReadAll(rw.Result().Body)
+	resp = &ResponseEnvelope{}
+	err = jsoniter.Unmarshal(res, resp)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "error")
 }
 
 func TestHandler(t *testing.T) {

@@ -4,16 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"sync"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	log "github.com/hamba/logger/v2"
+	lctx "github.com/hamba/logger/v2/ctx"
 	jsoniter "github.com/json-iterator/go"
 )
 
 // Handler represents an alexa request handler.
 type Handler interface {
 	Serve(*ResponseBuilder, *RequestEnvelope)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 // HandlerFunc is an adapter allowing a function to be used as a handler.
@@ -22,6 +27,27 @@ type HandlerFunc func(*ResponseBuilder, *RequestEnvelope)
 // Serve serves the request.
 func (fn HandlerFunc) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 	fn(b, r)
+}
+
+// ServeHTTP serves a HTTP request.
+func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	req, err := parseRequest(r.Body)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		_, _ = rw.Write([]byte(`{"error": "failed to parse request"}`))
+		return
+	}
+	defer func() { _ = r.Body.Close() }()
+
+	builder := &ResponseBuilder{}
+	fn(builder, req)
+
+	resp, err := jsoniter.Marshal(builder.Build())
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		resp = []byte(`{"error": "failed to marshal response"}`)
+	}
+	_, _ = rw.Write(resp)
 }
 
 // A Server defines parameters for running an Alexa server.
@@ -160,7 +186,7 @@ func fallbackHandler(err error) HandlerFunc {
 // Serve serves the matched handler.
 func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 	json, _ := jsoniter.Marshal(r)
-	m.logger.Debug(string(json))
+	m.logger.Debug("request", lctx.Str("json", string(json)))
 	h, err := m.Handler(r)
 	if err != nil {
 		h = fallbackHandler(err)
@@ -168,7 +194,49 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 
 	h.Serve(b, r)
 	json, _ = jsoniter.Marshal(b.Build())
-	m.logger.Debug(string(json))
+	m.logger.Debug("response", lctx.Str("json", string(json)))
+}
+
+// ServeHTTP dispatches the request to the handler whose
+// alexa intent matches the request URL.
+func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var h Handler
+	req, err := parseRequest(r.Body)
+	if err != nil {
+		h = fallbackHandler(err)
+	} else {
+		h, err = m.Handler(req)
+		if err != nil {
+			h = fallbackHandler(err)
+		}
+	}
+	defer func() { _ = r.Body.Close() }()
+
+	builder := &ResponseBuilder{}
+	h.Serve(builder, req)
+
+	resp, err := jsoniter.Marshal(builder.Build())
+	if err != nil {
+		m.logger.Error("failed to marshal response", lctx.Error("error", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		resp = []byte(`{"error": "failed to marshal response"}`)
+	}
+	if _, err := w.Write(resp); err != nil {
+		m.logger.Debug("failed to write response")
+	}
+}
+
+func parseRequest(b io.Reader) (*RequestEnvelope, error) {
+	payload, err := ioutil.ReadAll(b)
+	if err != nil {
+		return nil, err
+	}
+
+	req := &RequestEnvelope{}
+	if err := jsoniter.Unmarshal(payload, req); err != nil {
+		return nil, err
+	}
+	return req, nil
 }
 
 // DefaultServerMux is the default mux.
