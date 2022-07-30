@@ -9,7 +9,7 @@ env:
     - GO111MODULE=on
     - GOARCH=amd64
     - GOOS=linux
-    - GOLANGCI_LINTER_VERSION=v1.44.0
+    - GOLANGCI_LINTER_VERSION=v1.47.2
     - CGO_ENABLED=1
     # COVERALLS_TOKEN
 
