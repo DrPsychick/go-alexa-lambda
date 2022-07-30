@@ -19,7 +19,7 @@ type modelBuilder struct {
 }
 
 // NewModelBuilder returns an initialized modelBuilder.
-func NewModelBuilder() *modelBuilder { //nolint:revive
+func NewModelBuilder() *modelBuilder {
 	return &modelBuilder{
 		registry:   l10n.NewRegistry(),
 		invocation: l10n.KeySkillInvocation,
@@ -303,7 +303,7 @@ type modelIntentBuilder struct {
 }
 
 // NewModelIntentBuilder returns an initialized modelIntentBuilder.
-func NewModelIntentBuilder(name string) *modelIntentBuilder { //nolint:revive
+func NewModelIntentBuilder(name string) *modelIntentBuilder {
 	return &modelIntentBuilder{
 		registry:     l10n.NewRegistry(),
 		name:         name,
@@ -434,7 +434,7 @@ type modelSlotBuilder struct {
 }
 
 // NewModelSlotBuilder returns an initialized modelSlotBuilder.
-func NewModelSlotBuilder(intent, name, typeName string) *modelSlotBuilder { //nolint:revive
+func NewModelSlotBuilder(intent, name, typeName string) *modelSlotBuilder {
 	return &modelSlotBuilder{
 		registry:    l10n.NewRegistry(),
 		intent:      intent,
@@ -551,7 +551,7 @@ type modelTypeBuilder struct {
 }
 
 // NewModelTypeBuilder returns an initialized modelTypeBuilder.
-func NewModelTypeBuilder(name string) *modelTypeBuilder { //nolint:revive
+func NewModelTypeBuilder(name string) *modelTypeBuilder {
 	return &modelTypeBuilder{
 		registry:   l10n.NewRegistry(),
 		name:       name,
@@ -606,7 +606,7 @@ type modelValidationRule struct {
 }
 
 // NewModelValidationRulesBuilder returns an initialized modelValidationBuilder.
-func NewModelValidationRulesBuilder() *modelValidationRulesBuilder { //nolint:revive
+func NewModelValidationRulesBuilder() *modelValidationRulesBuilder {
 	return &modelValidationRulesBuilder{
 		registry: l10n.NewRegistry(),
 		rules:    []modelValidationRule{},
@@ -723,7 +723,7 @@ func (p *ModelPromptBuilder) WithVariation(varType string) *ModelPromptBuilder {
 }
 
 // Variation returns the variations for the varType.
-func (p *ModelPromptBuilder) Variation(varType string) *promptVariationsBuilder { //nolint:revive
+func (p *ModelPromptBuilder) Variation(varType string) *promptVariationsBuilder {
 	return p.variations[varType]
 }
 
@@ -758,7 +758,7 @@ type promptVariationsBuilder struct {
 }
 
 // NewPromptVariations returns an initialized builder with lookup key "$intent_$slot_$promptType_(Text|SSML)".
-func NewPromptVariations(intent, slot, promptType, varType string) *promptVariationsBuilder { //nolint:revive
+func NewPromptVariations(intent, slot, promptType, varType string) *promptVariationsBuilder {
 	t := l10n.KeyPostfixSSML
 	if varType == "PlainText" {
 		t = l10n.KeyPostfixText
