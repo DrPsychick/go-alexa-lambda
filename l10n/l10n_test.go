@@ -1,11 +1,11 @@
 package l10n_test
 
 import (
-	"bou.ke/monkey"
 	"github.com/drpsychick/go-alexa-lambda/l10n"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
+	"time"
 )
 
 const Greeting string = "greeting"
@@ -185,10 +185,7 @@ func TestLocale_GetAny(t *testing.T) {
 	// requires registry setup
 	assert.NotNil(t, registry)
 
-	patch := monkey.Patch(rand.Intn, func(i int) int {
-		return 1
-	})
-	defer patch.Unpatch()
+	rand.Seed(time.Now().Unix())
 
 	l, err := registry.Resolve("de-DE")
 	assert.NoError(t, err)

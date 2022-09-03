@@ -3,7 +3,6 @@ module github.com/drpsychick/go-alexa-lambda
 go 1.16
 
 require (
-	bou.ke/monkey v1.0.2
 	github.com/aws/aws-lambda-go v1.26.0
 	github.com/hamba/logger/v2 v2.3.0
 	github.com/hamba/statter/v2 v2.1.0

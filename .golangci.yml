@@ -21,6 +21,7 @@ linters:
     - scopelint # deprecated
     - maligned # deprecated
     - golint # deprecated
+    - ifshort # deprecated
     - exhaustive
     - exhaustivestruct
     - exhaustruct
