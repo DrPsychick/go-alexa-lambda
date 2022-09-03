@@ -75,7 +75,7 @@ func (s *Server) Serve() error {
 		return errors.New("alexa: cannot serve empty handler")
 	}
 
-	lambda.StartHandler(s)
+	lambda.Start(s)
 	return nil
 }
 
