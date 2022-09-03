@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"sync"
 
@@ -227,7 +226,7 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseRequest(b io.Reader) (*RequestEnvelope, error) {
-	payload, err := ioutil.ReadAll(b)
+	payload, err := io.ReadAll(b)
 	if err != nil {
 		return nil, err
 	}

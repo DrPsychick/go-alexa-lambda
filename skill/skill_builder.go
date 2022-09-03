@@ -138,7 +138,7 @@ func (s *SkillBuilder) Locale(locale string) *SkillLocaleBuilder {
 }
 
 // Model returns the corresponding model builder.
-func (s *SkillBuilder) Model() *modelBuilder {
+func (s *SkillBuilder) Model() *modelBuilder { //nolint:revive
 	if s.model == nil {
 		s.error = fmt.Errorf("no model builder registered")
 		return &modelBuilder{}

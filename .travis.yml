@@ -2,14 +2,14 @@ dist: focal
 
 language: go
 go:
-  - "1.16.x"
+  - "1.17.x"
   - "1.x"
 env:
   global:
     - GO111MODULE=on
     - GOARCH=amd64
     - GOOS=linux
-    - GOLANGCI_LINTER_VERSION=v1.47.2
+    - GOLANGCI_LINTER_VERSION=v1.49.0
     - CGO_ENABLED=1
     # COVERALLS_TOKEN
 
