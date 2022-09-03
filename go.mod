@@ -1,6 +1,6 @@
 module github.com/drpsychick/go-alexa-lambda
 
-go 1.16
+go 1.19
 
 require (
 	github.com/aws/aws-lambda-go v1.26.0
