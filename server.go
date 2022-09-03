@@ -2,7 +2,6 @@ package alexa
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -70,9 +69,8 @@ func (s *Server) Invoke(ctx context.Context, payload []byte) ([]byte, error) {
 
 // Serve serves the handler.
 func (s *Server) Serve() error {
-	// TODO: decide if we want a DefaultServeMux
 	if s.Handler == nil {
-		return errors.New("alexa: cannot serve empty handler")
+		s.Handler = DefaultServerMux
 	}
 
 	lambda.Start(s)
