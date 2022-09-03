@@ -13,10 +13,10 @@ type AmazonDomain string
 
 const (
 	AmazonDomainConversational AmazonDomain = "conversational" //nolint:revive
-	AmazonDomainLong           AmazonDomain = "long-form"
-	AmazonDomainMusic          AmazonDomain = "music"
-	AmazonDomainNews           AmazonDomain = "news"
-	AmazonDomainFun            AmazonDomain = "fun"
+	AmazonDomainLong           AmazonDomain = "long-form"      //nolint:revive
+	AmazonDomainMusic          AmazonDomain = "music"          //nolint:revive
+	AmazonDomainNews           AmazonDomain = "news"           //nolint:revive
+	AmazonDomainFun            AmazonDomain = "fun"            //nolint:revive
 )
 
 // UseDomain uses a specific domain of speech.
@@ -51,9 +51,9 @@ const (
 type AmazonEmotionIntensity string
 
 const (
-	EmotionIntensityLow    AmazonEmotionIntensity = "low" //nolint:revive
-	EmotionIntensityMedium AmazonEmotionIntensity = "medium"
-	EmotionIntensityHigh   AmazonEmotionIntensity = "high"
+	EmotionIntensityLow    AmazonEmotionIntensity = "low"    //nolint:revive
+	EmotionIntensityMedium AmazonEmotionIntensity = "medium" //nolint:revive
+	EmotionIntensityHigh   AmazonEmotionIntensity = "high"   //nolint:revive
 )
 
 // UseEmotion wraps the text in an emotion tag.
@@ -75,13 +75,13 @@ func UseAudio(src string) string {
 type BreakStrength string
 
 const (
-	BreakStrengthNone  BreakStrength = "none" //nolint:revive
-	BreakStrengthXWeak BreakStrength = "x-weak"
-	BreakStrengthWeak  BreakStrength = "weak"
+	BreakStrengthNone  BreakStrength = "none"   //nolint:revive
+	BreakStrengthXWeak BreakStrength = "x-weak" //nolint:revive
+	BreakStrengthWeak  BreakStrength = "weak"   //nolint:revive
 	// BreakStrengthMedium is the default.
 	BreakStrengthMedium  BreakStrength = "medium"
-	BreakStrengthStrong  BreakStrength = "strong"
-	BreakStrengthXStrong BreakStrength = "x-strong"
+	BreakStrengthStrong  BreakStrength = "strong"   //nolint:revive
+	BreakStrengthXStrong BreakStrength = "x-strong" //nolint:revive
 )
 
 // Break adds a break to speech.
@@ -151,21 +151,21 @@ type ProsodyRate string
 
 const (
 	ProsodyRateXSlow  ProsodyRate = "x-slow" //nolint:revive
-	ProsodyRateSlow   ProsodyRate = "slow"
-	ProsodyRateMedium ProsodyRate = "medium"
-	ProsodyRateFast   ProsodyRate = "fast"
-	ProsodyRateXFast  ProsodyRate = "x-fast"
+	ProsodyRateSlow   ProsodyRate = "slow"   //nolint:revive
+	ProsodyRateMedium ProsodyRate = "medium" //nolint:revive
+	ProsodyRateFast   ProsodyRate = "fast"   //nolint:revive
+	ProsodyRateXFast  ProsodyRate = "x-fast" //nolint:revive
 )
 
 // ProsodyPitch defines the pitch of the voice. Can be provided in %: positiv is higher, negative lower.
 type ProsodyPitch string
 
 const (
-	ProsodyPitchXLow   ProsodyPitch = "x-low" //nolint:revive
-	ProsodyPitchLow    ProsodyPitch = "low"
-	ProsodyPitchMedium ProsodyPitch = "medium"
-	ProsodyPitchHigh   ProsodyPitch = "high"
-	ProsodyPitchXHigh  ProsodyPitch = "x-high"
+	ProsodyPitchXLow   ProsodyPitch = "x-low"  //nolint:revive
+	ProsodyPitchLow    ProsodyPitch = "low"    //nolint:revive
+	ProsodyPitchMedium ProsodyPitch = "medium" //nolint:revive
+	ProsodyPitchHigh   ProsodyPitch = "high"   //nolint:revive
+	ProsodyPitchXHigh  ProsodyPitch = "x-high" //nolint:revive
 )
 
 // ProsodyVolume defines the volume of the voice. Can be provided in +/-dB, e.g. "+2dB".
@@ -173,11 +173,11 @@ type ProsodyVolume string
 
 const (
 	ProsodyVolumeSilent ProsodyVolume = "silent" //nolint:revive
-	ProsodyVolumeXSoft  ProsodyVolume = "x-soft"
-	ProsodyVolumeSoft   ProsodyVolume = "soft"
-	ProsodyVolumeMedium ProsodyVolume = "medium"
-	ProsodyVolumeLoud   ProsodyVolume = "loud"
-	ProsodyVolumeXLoud  ProsodyVolume = "x-loud"
+	ProsodyVolumeXSoft  ProsodyVolume = "x-soft" //nolint:revive
+	ProsodyVolumeSoft   ProsodyVolume = "soft"   //nolint:revive
+	ProsodyVolumeMedium ProsodyVolume = "medium" //nolint:revive
+	ProsodyVolumeLoud   ProsodyVolume = "loud"   //nolint:revive
+	ProsodyVolumeXLoud  ProsodyVolume = "x-loud" //nolint:revive
 )
 
 // Prosody modifies the volume, pitch, and rate of the tagged speech.

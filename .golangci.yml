@@ -22,6 +22,10 @@ linters:
     - maligned # deprecated
     - golint # deprecated
     - ifshort # deprecated
+    - structcheck # deprecated
+    - nosnakecase # deprecated
+    - varcheck # deprecated
+    - deadcode # deprecated
     - exhaustive
     - exhaustivestruct
     - exhaustruct
