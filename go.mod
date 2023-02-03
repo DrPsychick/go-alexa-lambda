@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/aws/aws-lambda-go v1.37.0
 	github.com/hamba/logger/v2 v2.4.0
-	github.com/hamba/statter/v2 v2.3.1
+	github.com/hamba/statter/v2 v2.3.2
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.8.1
 )
