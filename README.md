@@ -1,5 +1,5 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/drpsychick/go-alexa-lambda)](https://goreportcard.com/report/github.com/drpsychick/go-alexa-lambda)
-[![Build Status](https://app.travis-ci.com/DrPsychick/go-alexa-lambda.svg?branch=main)](https://app.travis-ci.com/DrPsychick/go-alexa-lambda)
+[![Workflow Status](https://img.shields.io/github/actions/workflow/status/drpsychick/go-alexa-lambda/ci.yaml)](https://github.com/DrPsychick/go-alexa-lambda/actions)
 [![Coverage Status](https://coveralls.io/repos/github/DrPsychick/go-alexa-lambda/badge.svg?branch=main)](https://coveralls.io/github/DrPsychick/go-alexa-lambda?branch=main)
 [![license](https://img.shields.io/github/license/drpsychick/go-alexa-lambda.svg)](https://github.com/drpsychick/go-alexa-lambda/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/drpsychick/go-alexa-lambda.svg)](https://github.com/drpsychick/go-alexa-lambda)
