@@ -6,9 +6,10 @@ import (
 	log "github.com/hamba/logger/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"runtime"
 	"testing"
@@ -31,15 +32,40 @@ func TestServer(t *testing.T) {
 	assert.NotEmpty(t, resp)
 }
 
+func TestMuxServeHTTPProbes(t *testing.T) {
+	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
+	rw := httptest.NewRecorder()
+	u, _ := url.Parse("http://anything/healthz")
+	r := &http.Request{Method: http.MethodGet, URL: u}
+
+	mux.ServeHTTP(rw, r)
+
+	res, err := io.ReadAll(rw.Result().Body)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "ok")
+
+	rw = httptest.NewRecorder()
+	u, _ = url.Parse("http://anything/readyz")
+	r = &http.Request{Method: http.MethodGet, URL: u}
+
+	mux.ServeHTTP(rw, r)
+
+	res, err = io.ReadAll(rw.Result().Body)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "ok")
+}
+
 func TestMuxServeHTTP(t *testing.T) {
 	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	rw := httptest.NewRecorder()
-	b := ioutil.NopCloser(bytes.NewReader([]byte(`{}`)))
+	b := io.NopCloser(bytes.NewReader([]byte(`{}`)))
 	r := &http.Request{Method: http.MethodGet, Body: b}
 
 	mux.ServeHTTP(rw, r)
 
-	res, _ := ioutil.ReadAll(rw.Result().Body)
+	res, _ := io.ReadAll(rw.Result().Body)
 	resp := &ResponseEnvelope{}
 	err := jsoniter.Unmarshal(res, resp)
 	assert.NoError(t, err)
@@ -47,12 +73,12 @@ func TestMuxServeHTTP(t *testing.T) {
 	assert.Contains(t, string(res), "error")
 
 	rw = httptest.NewRecorder()
-	b = ioutil.NopCloser(bytes.NewReader([]byte(`foo`)))
+	b = io.NopCloser(bytes.NewReader([]byte(`foo`)))
 	r = &http.Request{Method: http.MethodGet, Body: b}
 
 	mux.ServeHTTP(rw, r)
 
-	res, _ = ioutil.ReadAll(rw.Result().Body)
+	res, _ = io.ReadAll(rw.Result().Body)
 	resp = &ResponseEnvelope{}
 	err = jsoniter.Unmarshal(res, resp)
 	assert.NoError(t, err)
@@ -63,12 +89,12 @@ func TestMuxServeHTTP(t *testing.T) {
 	req := &RequestEnvelope{Request: &Request{Type: TypeIntentRequest, Intent: Intent{Name: HelpIntent}}}
 	content, err := jsoniter.Marshal(req)
 	assert.NoError(t, err)
-	b = ioutil.NopCloser(bytes.NewReader(content))
+	b = io.NopCloser(bytes.NewReader(content))
 	r = &http.Request{Method: http.MethodGet, Body: b}
 
 	mux.ServeHTTP(rw, r)
 
-	res, _ = ioutil.ReadAll(rw.Result().Body)
+	res, _ = io.ReadAll(rw.Result().Body)
 	resp = &ResponseEnvelope{}
 	err = jsoniter.Unmarshal(res, resp)
 	assert.NoError(t, err)
