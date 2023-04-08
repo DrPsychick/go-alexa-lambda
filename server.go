@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -197,7 +198,7 @@ func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 // ServeHTTP dispatches the request to the handler whose
 // alexa intent matches the request URL.
 func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL != nil && (r.URL.Path == "/healthz" || r.URL.Path == "/readyz") {
+	if r.URL != nil && (strings.HasSuffix(r.URL.Path, "/livez") || strings.HasSuffix(r.URL.Path, "/readyz")) {
 		if _, err := w.Write([]byte("ok")); err != nil {
 			m.logger.Debug("failed to write response")
 		}

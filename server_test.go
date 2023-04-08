@@ -35,7 +35,7 @@ func TestServer(t *testing.T) {
 func TestMuxServeHTTPProbes(t *testing.T) {
 	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	rw := httptest.NewRecorder()
-	u, _ := url.Parse("http://anything/healthz")
+	u, _ := url.Parse("http://anything.net/livez")
 	r := &http.Request{Method: http.MethodGet, URL: u}
 
 	mux.ServeHTTP(rw, r)
@@ -46,7 +46,7 @@ func TestMuxServeHTTPProbes(t *testing.T) {
 	assert.Contains(t, string(res), "ok")
 
 	rw = httptest.NewRecorder()
-	u, _ = url.Parse("http://anything/readyz")
+	u, _ = url.Parse("http://anything.com/somethingelse/readyz")
 	r = &http.Request{Method: http.MethodGet, URL: u}
 
 	mux.ServeHTTP(rw, r)
