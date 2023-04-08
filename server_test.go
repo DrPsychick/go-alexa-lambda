@@ -32,6 +32,48 @@ func TestServer(t *testing.T) {
 	assert.NotEmpty(t, resp)
 }
 
+func TestServerHTTPProbes(t *testing.T) {
+	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {})
+	rw := httptest.NewRecorder()
+	u, _ := url.Parse("http://anything.net/foobar/livez")
+	r := &http.Request{Method: http.MethodGet, URL: u}
+
+	h.ServeHTTP(rw, r)
+
+	res, err := io.ReadAll(rw.Result().Body)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "ok")
+}
+
+func TestServerHTTP(t *testing.T) {
+	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) { b.WithSimpleCard("title", "TestServerHTTP") })
+	rw := httptest.NewRecorder()
+	b := io.NopCloser(bytes.NewReader([]byte(`{}`)))
+	r := &http.Request{Method: http.MethodGet, Body: b}
+
+	h.ServeHTTP(rw, r)
+
+	res, err := io.ReadAll(rw.Result().Body)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "TestServerHTTP")
+}
+
+func TestServerHTTPFail(t *testing.T) {
+	h := HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {})
+	rw := httptest.NewRecorder()
+	b := io.NopCloser(bytes.NewReader([]byte(`invalid-json`)))
+	r := &http.Request{Method: http.MethodGet, Body: b}
+
+	h.ServeHTTP(rw, r)
+
+	res, err := io.ReadAll(rw.Result().Body)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusInternalServerError, rw.Result().StatusCode)
+	assert.Contains(t, string(res), "failed to parse request")
+}
+
 func TestMuxServeHTTPProbes(t *testing.T) {
 	mux := NewServerMux(log.New(nil, log.ConsoleFormat(), log.Info))
 	rw := httptest.NewRecorder()
