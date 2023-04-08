@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	l2 "log"
 	"net/http"
 	"strings"
 	"sync"
@@ -30,6 +31,13 @@ func (fn HandlerFunc) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 
 // ServeHTTP serves a HTTP request.
 func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	if r.URL != nil && (strings.HasSuffix(r.URL.Path, "/livez") || strings.HasSuffix(r.URL.Path, "/readyz")) {
+		if _, err := rw.Write([]byte("ok")); err != nil {
+			l2.Fatal("error: could not write response")
+		}
+		return
+	}
+
 	req, err := parseRequest(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
