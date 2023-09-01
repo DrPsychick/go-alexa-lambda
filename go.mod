@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/aws/aws-lambda-go v1.41.0
-	github.com/hamba/logger/v2 v2.4.0
+	github.com/hamba/logger/v2 v2.5.0
 	github.com/hamba/statter/v2 v2.3.3
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.8.4
@@ -17,5 +17,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/valyala/fastrand v1.1.0 // indirect
+	go.opentelemetry.io/otel v1.17.0 // indirect
+	go.opentelemetry.io/otel/trace v1.17.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
