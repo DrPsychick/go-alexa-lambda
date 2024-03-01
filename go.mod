@@ -7,7 +7,7 @@ require (
 	github.com/hamba/logger/v2 v2.5.0
 	github.com/hamba/statter/v2 v2.3.4
 	github.com/json-iterator/go v1.1.12
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 )
 
 require (
