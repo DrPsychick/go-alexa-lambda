@@ -3,7 +3,7 @@ module github.com/drpsychick/go-alexa-lambda
 go 1.19
 
 require (
-	github.com/aws/aws-lambda-go v1.46.0
+	github.com/aws/aws-lambda-go v1.47.0
 	github.com/hamba/logger/v2 v2.5.0
 	github.com/hamba/statter/v2 v2.3.4
 	github.com/json-iterator/go v1.1.12
