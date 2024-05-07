@@ -367,7 +367,7 @@ func (i *modelIntentBuilder) WithConfirmation(c bool) *modelIntentBuilder {
 }
 
 // WithIntentConfirmationPrompt does nothing.
-func (i *modelIntentBuilder) WithIntentConfirmationPrompt(prompt string) *modelIntentBuilder {
+func (i *modelIntentBuilder) WithIntentConfirmationPrompt(_ string) *modelIntentBuilder {
 	// TODO: WithIntentConfirmationPrompt
 	// add a prompt to the model `model.WithIntentConfirmationPrompt(intent, slot)`
 	// add variations `model.IntentConfirmationPrompt(intent, slot).WithVariation("PlainText")`

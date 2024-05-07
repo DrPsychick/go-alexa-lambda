@@ -1,6 +1,6 @@
 run:
   tests: false
-  deadline: 5m
+  timeout: 5m
 
 linters-settings:
   cyclop:
@@ -32,7 +32,7 @@ linters:
     - forcetypeassert
     - gochecknoglobals
     - gochecknoinits
-    - goerr113
+    - err113
     - gomnd
     - nlreturn
     - wrapcheck
@@ -40,6 +40,7 @@ linters:
     - tagliatelle
     - varnamelen
     - ireturn
+    - depguard
 
 issues:
   exclude-use-default: false

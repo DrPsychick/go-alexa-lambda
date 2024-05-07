@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
-	"time"
 )
 
 // Default keys.
@@ -71,7 +70,6 @@ const (
 )
 
 func init() {
-	rand.Seed(time.Now().UTC().UnixNano())
 }
 
 // LocaleError defines the interface for locale errors.
@@ -217,7 +215,7 @@ func Resolve(name string) (LocaleInstance, error) {
 // Register registers a new locale and fails if it already exists.
 func (r *Registry) Register(l LocaleInstance, opts ...RegisterFunc) error {
 	if l.GetName() == "" {
-		return fmt.Errorf("cannot register locale with no name")
+		return errors.New("cannot register locale with no name")
 	}
 	if _, ok := r.locales[l.GetName()]; ok {
 		return fmt.Errorf("locale %s already registered", l.GetName())
