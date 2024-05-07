@@ -17,7 +17,7 @@ import (
 
 // Handler represents an alexa request handler.
 type Handler interface {
-	Serve(*ResponseBuilder, *RequestEnvelope)
+	Serve(builder *ResponseBuilder, req *RequestEnvelope)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
@@ -63,7 +63,7 @@ type Server struct {
 }
 
 // Invoke calls the handler, and serializes the response.
-func (s *Server) Invoke(ctx context.Context, payload []byte) ([]byte, error) {
+func (s *Server) Invoke(_ context.Context, payload []byte) ([]byte, error) {
 	req := &RequestEnvelope{}
 	if err := jsoniter.Unmarshal(payload, req); err != nil {
 		return nil, err
@@ -183,7 +183,7 @@ func (m *ServeMux) HandleIntentFunc(intent string, handler HandlerFunc) {
 
 // fallbackHandler returns a fatal error card.
 func fallbackHandler(err error) HandlerFunc {
-	return HandlerFunc(func(b *ResponseBuilder, r *RequestEnvelope) {
+	return HandlerFunc(func(b *ResponseBuilder, _ *RequestEnvelope) {
 		b.WithSimpleCard("Fatal error", "error: "+err.Error()).
 			WithShouldEndSession(true)
 	})
