@@ -1,4 +1,4 @@
-name: continuous-integration
+name: CI
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   lint:
+    name: Lint code
     runs-on: ubuntu-latest
     env:
       GOLANGCI_LINT_VERSION: v1.58.0
@@ -25,7 +26,8 @@ jobs:
           skip-pkg-cache: true
           skip-build-cache: true
 
-  build:
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4

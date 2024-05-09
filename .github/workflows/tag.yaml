@@ -1,9 +1,9 @@
-name: Release
+name: Tag
 
 on:
   workflow_run:
     workflows:
-      - "continuous-integration"
+      - CI
     branches:
       - main
     types:
