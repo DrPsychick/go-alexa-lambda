@@ -10,7 +10,7 @@ on:
       - completed
 
 jobs:
-  release:
+  tag:
     name: Create new release tag
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
