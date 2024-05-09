@@ -1,13 +1,18 @@
-name: Release on Tag
+name: Tag and Release
 
 on:
-  push:
-    tags:
-      - v*
+  workflow_run:
+    workflows:
+      - CI
+    branches:
+      - main
+    types:
+      - completed
 
 jobs:
   release:
-    name: Create new release
+    name: Create new release tag
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -16,8 +21,16 @@ jobs:
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
         with:
           fetch-depth: 0
+      - name: Bump version and push tag
+        id: version_bump
+        uses: anothrNick/github-tag-action@1.69.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          DEFAULT_BUMP: patch
+          WITH_V: true
       - uses: ncipollo/release-action@v1
         with:
-          tag: "$GITHUB_REF_NAME"
+          tag: "${{ steps.version_bump.outputs.new_tag }}"
           generateReleaseNotes: true
           skipIfReleaseExists: true
