@@ -2,5 +2,17 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "enabledManagers": ["regex", "gomod", "github-actions"],
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^.github/workflows/ci.yaml$"
+      ],
+      "matchStrings": [
+        "\\s.*_VERSION: (?<currentValue>.*?) # (?<datasource>.*?):(?<depName>.*?)\\n"
+      ],
+      "versioningTemplate": "semver"
+    }
   ]
 }

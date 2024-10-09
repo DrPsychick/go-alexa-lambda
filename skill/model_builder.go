@@ -653,8 +653,7 @@ func (v *modelValidationRulesBuilder) BuildRules(locale string) ([]SlotValidatio
 		// TODO: implement value:
 		// https://developer.amazon.com/docs/smapi/interaction-model-schema.html#dialog_slot_validations
 		// types isInSet/isNotInSet/... require values
-		if (val.Type == ValidationTypeInSet || val.Type == ValidationTypeNotInSet) &&
-			(val.Values == nil || len(val.Values) == 0) {
+		if (val.Type == ValidationTypeInSet || val.Type == ValidationTypeNotInSet) && len(val.Values) == 0 {
 			return sv, fmt.Errorf("validation type requires values (%s: %s)", locale, val.Prompt)
 		}
 

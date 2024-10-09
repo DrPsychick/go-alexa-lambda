@@ -156,7 +156,7 @@ func (s *SkillBuilder) Build() (*Skill, error) { //nolint:funlen,cyclop
 		return nil, errors.New("no locales registered to build")
 	}
 	// create SkillLocaleBuilders from registry
-	if s.locales == nil || len(s.locales) == 0 {
+	if len(s.locales) == 0 {
 		for n := range s.registry.GetLocales() {
 			s.locales[n] = NewSkillLocaleBuilder(n).
 				WithLocaleRegistry(s.registry)

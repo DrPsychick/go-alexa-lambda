@@ -17,17 +17,11 @@ linters-settings:
 linters:
   enable-all: true
   disable:
-    - interfacer # deprecated
-    - scopelint # deprecated
-    - maligned # deprecated
-    - golint # deprecated
-    - ifshort # deprecated
-    - structcheck # deprecated
-    - nosnakecase # deprecated
-    - varcheck # deprecated
-    - deadcode # deprecated
+    - exportloopref # deprecated
+    - execinquery # deprecated
+    - copyloopvar # deprecated
+    - intrange # deprecated
     - exhaustive
-    - exhaustivestruct
     - exhaustruct
     - forcetypeassert
     - gochecknoglobals
