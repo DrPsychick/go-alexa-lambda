@@ -24,6 +24,8 @@ github.com/hamba/statter/v2 v2.3.4 h1:g8rJIlDhN9s1Td5x+g+uvgbI0HmTzLiZoRmCfLK8CA
 github.com/hamba/statter/v2 v2.3.4/go.mod h1:bBparxhvlgp5rWvmaGIc6+Tc4kOYF6cUU0bDUjjaioA=
 github.com/hamba/statter/v2 v2.3.5 h1:qAFu+n4Q08LtrBdcBYexItfOoJJ16D/m/boq8fm5hn4=
 github.com/hamba/statter/v2 v2.3.5/go.mod h1:LS7DqETxoVpRraL3tn9O70zYCaVRL2A98SvZw/LZkAI=
+github.com/hamba/statter/v2 v2.4.0 h1:0axag+o3oFGH7UC+tYXN3oY/Qq5pspQUaMpHjtxjw40=
+github.com/hamba/statter/v2 v2.4.0/go.mod h1:U8ojLXmTKsBQ8HX+JVW3iqOw2Wepm4YnTYoxyim6spA=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/matttproud/golang_protobuf_extensions v1.0.4 h1:mmDVorXM7PCGKw94cs5zkfA9PSy5pEvNWRP0ET0TIVo=
