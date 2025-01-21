@@ -18,7 +18,6 @@ linters:
   enable-all: true
   disable:
     - exportloopref # deprecated
-    - execinquery # deprecated
     - copyloopvar # deprecated
     - intrange # deprecated
     - exhaustive
@@ -27,7 +26,6 @@ linters:
     - gochecknoglobals
     - gochecknoinits
     - err113
-    - gomnd
     - nlreturn
     - wrapcheck
     - wsl
@@ -35,6 +33,8 @@ linters:
     - varnamelen
     - ireturn
     - depguard
+    # temporarily disable revive: https://github.com/golangci/golangci-lint/issues/3476
+    - revive
 
 issues:
   exclude-use-default: false
