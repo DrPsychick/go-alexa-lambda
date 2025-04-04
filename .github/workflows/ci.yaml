@@ -11,16 +11,16 @@ jobs:
     name: Lint code
     runs-on: ubuntu-latest
     env:
-      GOLANGCI_LINT_VERSION: v2.4.0 # github-releases:golangci/golangci-lint
+      GOLANGCI_LINT_VERSION: v2.0.2 # github-releases:golangci/golangci-lint
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: 'go.mod'
           cache: true
       - name: Lint code
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v7
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
           skip-pkg-cache: true
@@ -30,7 +30,7 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
