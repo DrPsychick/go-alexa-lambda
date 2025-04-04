@@ -1,56 +1,64 @@
+version: "2"
 run:
   tests: false
-  timeout: 5m
-
-linters-settings:
-  cyclop:
-    max-complexity: 12
-    skip-tests: true
-  gofumpt:
-    extra-rules: true
-  godox:
-    keywords:
-      - HACK
-      - FIXME
-      - BUG
-
 linters:
-  enable-all: true
+  default: all
   disable:
-    - exportloopref # deprecated
-    - copyloopvar # deprecated
-    - intrange # deprecated
+    - copyloopvar
+    - depguard
+    - err113
     - exhaustive
     - exhaustruct
     - forcetypeassert
     - gochecknoglobals
     - gochecknoinits
-    - err113
+    - intrange
+    - ireturn
     - nlreturn
-    - wrapcheck
-    - wsl
+    - revive
     - tagliatelle
     - varnamelen
-    - ireturn
-    - depguard
-    # temporarily disable revive: https://github.com/golangci/golangci-lint/issues/3476
-    - revive
-
-issues:
-  exclude-use-default: false
-  exclude-rules:
-    # file permission 600
-    - text: "G306:"
-      linters:
-        - gosec
-    # directory permissions 750
-    - text: "G301:"
-      linters:
-        - gosec
-    - path: ssml
-      linters:
-        - lll
-#    - text: "G404:"
-##      path: pkg/alexa/l10n/
-#      linters:
-#        - gosec
+    - wrapcheck
+    - wsl
+  settings:
+    cyclop:
+      max-complexity: 12
+    godox:
+      keywords:
+        - HACK
+        - FIXME
+        - BUG
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - gosec
+        text: 'G306:'
+      - linters:
+          - gosec
+        text: 'G301:'
+      - linters:
+          - lll
+        path: ssml
+      - linters:
+          - cyclop
+        path: (.+)_test\.go
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      extra-rules: true
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
