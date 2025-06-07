@@ -2,7 +2,7 @@ module github.com/drpsychick/go-alexa-lambda
 
 go 1.23.0
 
-toolchain go1.24.3
+toolchain go1.24.4
 
 require (
 	github.com/aws/aws-lambda-go v1.48.0
