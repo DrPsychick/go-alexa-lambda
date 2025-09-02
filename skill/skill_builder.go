@@ -89,21 +89,26 @@ func (s *SkillBuilder) AddCountries(cs []string) *SkillBuilder {
 
 // AddLocale creates, registers locale and adds a new locale builder.
 func (s *SkillBuilder) AddLocale(locale string, opts ...l10n.RegisterFunc) *SkillBuilder {
-	if err := s.registry.Register(l10n.NewLocale(locale), opts...); err != nil {
+	err := s.registry.Register(l10n.NewLocale(locale), opts...)
+	if err != nil {
 		s.error = err
 		return s
 	}
+
 	lb := NewSkillLocaleBuilder(locale).
 		WithLocaleRegistry(s.registry)
 	s.locales[locale] = lb
+
 	return s
 }
 
 // WithDefaultLocale sets the default locale for the skill (used for.
 func (s *SkillBuilder) WithDefaultLocale(locale string) *SkillBuilder {
-	if err := s.registry.SetDefault(locale); err != nil {
+	err := s.registry.SetDefault(locale)
+	if err != nil {
 		s.error = err
 	}
+
 	return s
 }
 
@@ -114,7 +119,9 @@ func (s *SkillBuilder) WithDefaultLocaleTestingInstructions(instructions string)
 		s.error = errors.New("no default locale registered")
 		return s
 	}
+
 	dl.Set(s.instructions, []string{instructions})
+
 	return s
 }
 
@@ -122,6 +129,7 @@ func (s *SkillBuilder) WithDefaultLocaleTestingInstructions(instructions string)
 func (s *SkillBuilder) WithModel() *SkillBuilder {
 	s.model = NewModelBuilder().
 		WithLocaleRegistry(s.registry)
+
 	return s
 }
 
@@ -135,6 +143,7 @@ func (s *SkillBuilder) Locale(locale string) *SkillLocaleBuilder {
 		s.error = fmt.Errorf("no builder registered for locale '%s'", locale)
 		return &SkillLocaleBuilder{}
 	}
+
 	return s.locales[locale]
 }
 
@@ -144,6 +153,7 @@ func (s *SkillBuilder) Model() *modelBuilder { //nolint:revive
 		s.error = errors.New("no model builder registered")
 		return &modelBuilder{}
 	}
+
 	return s.model
 }
 
@@ -152,6 +162,7 @@ func (s *SkillBuilder) Build() (*Skill, error) { //nolint:funlen,cyclop
 	if s.error != nil {
 		return nil, s.error
 	}
+
 	if s.registry == nil || len(s.registry.GetLocales()) == 0 {
 		return nil, errors.New("no locales registered to build")
 	}
@@ -175,9 +186,11 @@ func (s *SkillBuilder) Build() (*Skill, error) { //nolint:funlen,cyclop
 			Publishing: Publishing{},
 		},
 	}
+
 	if s.category == "" {
 		return nil, errors.New("skill category is required")
 	}
+
 	skill.Manifest.Publishing.Category = s.category
 	// TODO: ensure unique occurrence?
 	if len(s.countries) > 0 {
@@ -185,9 +198,11 @@ func (s *SkillBuilder) Build() (*Skill, error) { //nolint:funlen,cyclop
 	} else {
 		skill.Manifest.Publishing.Worldwide = true
 	}
+
 	if dl.Get(s.instructions) == "" {
 		return nil, fmt.Errorf("testing instructions are required (%s: %s)", dl.GetName(), s.instructions)
 	}
+
 	skill.Manifest.Publishing.TestingInstructions = dl.Get(s.instructions)
 
 	// TODO: Permissions are required.
@@ -195,18 +210,23 @@ func (s *SkillBuilder) Build() (*Skill, error) { //nolint:funlen,cyclop
 
 	// PrivacyAndCompliance is required.
 	skill.Manifest.Privacy = &Privacy{}
+
 	if s.privacyFlags[FlagIsExportCompliant] {
 		skill.Manifest.Privacy.IsExportCompliant = true
 	}
+
 	if s.privacyFlags[FlagContainsAds] {
 		skill.Manifest.Privacy.ContainsAds = true
 	}
+
 	if s.privacyFlags[FlagAllowsPurchases] {
 		skill.Manifest.Privacy.AllowsPurchases = true
 	}
+
 	if s.privacyFlags[FlagUsesPersonalInfo] {
 		skill.Manifest.Privacy.UsesPersonalInfo = true
 	}
+
 	if s.privacyFlags[FlagIsChildDirected] {
 		skill.Manifest.Privacy.IsChildDirected = true
 	}
@@ -214,17 +234,20 @@ func (s *SkillBuilder) Build() (*Skill, error) { //nolint:funlen,cyclop
 	// Add elements for every locale.
 	skill.Manifest.Publishing.Locales = map[string]LocaleDef{}
 	skill.Manifest.Privacy.Locales = map[string]PrivacyLocaleDef{}
+
 	for n, lb := range s.locales {
 		l1, err := lb.BuildPublishingLocale()
 		if err != nil {
 			return nil, err
 		}
+
 		skill.Manifest.Publishing.Locales[n] = l1
 
 		l2, err := lb.BuildPrivacyLocale()
 		if err != nil {
 			return nil, err
 		}
+
 		skill.Manifest.Privacy.Locales[n] = l2
 	}
 
@@ -236,9 +259,11 @@ func (s *SkillBuilder) BuildModels() (map[string]*Model, error) {
 	if s.error != nil {
 		return nil, s.error
 	}
+
 	if s.model == nil {
 		return nil, errors.New("no model to build")
 	}
+
 	return s.model.Build()
 }
 
@@ -261,12 +286,15 @@ type SkillLocaleBuilder struct { //nolint:revive
 // NewSkillLocaleBuilder creates a new instance with default locale lookup keys.
 func NewSkillLocaleBuilder(locale string) *SkillLocaleBuilder {
 	r := l10n.NewRegistry()
-	if err := r.Register(l10n.NewLocale(locale)); err != nil {
+
+	err := r.Register(l10n.NewLocale(locale))
+	if err != nil {
 		return &SkillLocaleBuilder{
 			locale: locale,
 			error:  err,
 		}
 	}
+
 	return &SkillLocaleBuilder{
 		locale:           locale,
 		registry:         r,
@@ -301,7 +329,9 @@ func (l *SkillLocaleBuilder) WithLocaleName(name string) *SkillLocaleBuilder {
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillName, []string{name})
+
 	return l
 }
 
@@ -318,7 +348,9 @@ func (l *SkillLocaleBuilder) WithLocaleSummary(summary string) *SkillLocaleBuild
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillSummary, []string{summary})
+
 	return l
 }
 
@@ -335,7 +367,9 @@ func (l *SkillLocaleBuilder) WithLocaleDescription(description string) *SkillLoc
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillDescription, []string{description})
+
 	return l
 }
 
@@ -352,7 +386,9 @@ func (l *SkillLocaleBuilder) WithLocaleExamples(examples []string) *SkillLocaleB
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillExamples, examples)
+
 	return l
 }
 
@@ -369,7 +405,9 @@ func (l *SkillLocaleBuilder) WithLocaleKeywords(keywords []string) *SkillLocaleB
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillKeywords, keywords)
+
 	return l
 }
 
@@ -386,7 +424,9 @@ func (l *SkillLocaleBuilder) WithLocaleSmallIcon(smallicon string) *SkillLocaleB
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillSmallIcon, []string{smallicon})
+
 	return l
 }
 
@@ -403,7 +443,9 @@ func (l *SkillLocaleBuilder) WithLocaleLargeIcon(largeicon string) *SkillLocaleB
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillLargeIcon, []string{largeicon})
+
 	return l
 }
 
@@ -420,7 +462,9 @@ func (l *SkillLocaleBuilder) WithLocalePrivacyURL(privacyURL string) *SkillLocal
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillPrivacyURL, []string{privacyURL})
+
 	return l
 }
 
@@ -437,7 +481,9 @@ func (l *SkillLocaleBuilder) WithLocaleTermsURL(termsURL string) *SkillLocaleBui
 		l.error = err
 		return l
 	}
+
 	loc.Set(l.skillTermsURL, []string{termsURL})
+
 	return l
 }
 
@@ -446,6 +492,7 @@ func (l *SkillLocaleBuilder) BuildPublishingLocale() (LocaleDef, error) {
 	if l.error != nil {
 		return LocaleDef{}, l.error
 	}
+
 	loc, err := l.registry.Resolve(l.locale)
 	if err != nil {
 		return LocaleDef{}, err
@@ -461,12 +508,15 @@ func (l *SkillLocaleBuilder) BuildPublishingLocale() (LocaleDef, error) {
 			l.locale,
 		)
 	}
+
 	if len(loc.GetAll(l.skillExamples)) > 3 { //nolint:mnd
 		return LocaleDef{}, fmt.Errorf("only 3 examplePhrases are allowed (%s)", l.locale)
 	}
+
 	if len(loc.GetAll(l.skillKeywords)) > 3 { //nolint:mnd
 		return LocaleDef{}, fmt.Errorf("only 3 keywords are allowed (%s)", l.locale)
 	}
+
 	return LocaleDef{
 		Name:         loc.Get(l.skillName),
 		Summary:      loc.Get(l.skillSummary),
@@ -483,10 +533,12 @@ func (l *SkillLocaleBuilder) BuildPrivacyLocale() (PrivacyLocaleDef, error) {
 	if l.error != nil {
 		return PrivacyLocaleDef{}, l.error
 	}
+
 	loc, err := l.registry.Resolve(l.locale)
 	if err != nil {
 		return PrivacyLocaleDef{}, err
 	}
+
 	p := PrivacyLocaleDef{
 		PrivacyPolicyURL: loc.Get(l.skillPrivacyURL),
 	}
@@ -497,5 +549,6 @@ func (l *SkillLocaleBuilder) BuildPrivacyLocale() (PrivacyLocaleDef, error) {
 		return PrivacyLocaleDef{}, fmt.Errorf("'termsOfUse' makes Skill deployment fail! (%s)", l.locale)
 		// p.TermsOfUse = loc.Get(l.skillTermsURL)
 	}
+
 	return p, nil
 }

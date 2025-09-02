@@ -20,6 +20,7 @@ linters:
     - varnamelen
     - wrapcheck
     - wsl
+    - noinlineerr
   settings:
     cyclop:
       max-complexity: 12

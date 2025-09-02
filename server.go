@@ -35,6 +35,7 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		if _, err := rw.Write([]byte("ok")); err != nil {
 			l2.Fatal("error: could not write response")
 		}
+
 		return
 	}
 
@@ -42,8 +43,10 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		_, _ = rw.Write([]byte(`{"error": "failed to parse request"}`))
+
 		return
 	}
+
 	defer func() { _ = r.Body.Close() }()
 
 	builder := &ResponseBuilder{}
@@ -52,8 +55,10 @@ func (fn HandlerFunc) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	resp, err := jsoniter.Marshal(builder.Build())
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
+
 		resp = []byte(`{"error": "failed to marshal response"}`)
 	}
+
 	_, _ = rw.Write(resp)
 }
 
@@ -65,7 +70,9 @@ type Server struct {
 // Invoke calls the handler, and serializes the response.
 func (s *Server) Invoke(_ context.Context, payload []byte) ([]byte, error) {
 	req := &RequestEnvelope{}
-	if err := jsoniter.Unmarshal(payload, req); err != nil {
+
+	err := jsoniter.Unmarshal(payload, req)
+	if err != nil {
 		return nil, err
 	}
 
@@ -83,6 +90,7 @@ func (s *Server) Serve() error {
 	}
 
 	lambda.Start(s)
+
 	return nil
 }
 
@@ -145,6 +153,7 @@ func (m *ServeMux) HandleRequestType(requestType RequestType, handler Handler) {
 	if requestType == TypeIntentRequest {
 		return
 	}
+
 	if handler == nil {
 		panic("alexa: nil handler")
 	}
@@ -193,6 +202,7 @@ func fallbackHandler(err error) HandlerFunc {
 func (m *ServeMux) Serve(b *ResponseBuilder, r *RequestEnvelope) {
 	json, _ := jsoniter.Marshal(r)
 	m.logger.Debug("request", lctx.Str("json", string(json)))
+
 	h, err := m.Handler(r)
 	if err != nil {
 		h = fallbackHandler(err)
@@ -210,10 +220,12 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if _, err := w.Write([]byte("ok")); err != nil {
 			m.logger.Debug("failed to write response")
 		}
+
 		return
 	}
 
 	var h Handler
+
 	req, err := parseRequest(r.Body)
 	if err != nil {
 		h = fallbackHandler(err)
@@ -223,6 +235,7 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			h = fallbackHandler(err)
 		}
 	}
+
 	defer func() { _ = r.Body.Close() }()
 
 	builder := &ResponseBuilder{}
@@ -232,8 +245,10 @@ func (m *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		m.logger.Error("failed to marshal response", lctx.Error("error", err))
 		w.WriteHeader(http.StatusInternalServerError)
+
 		resp = []byte(`{"error": "failed to marshal response"}`)
 	}
+
 	if _, err := w.Write(resp); err != nil {
 		m.logger.Debug("failed to write response")
 	}
@@ -249,6 +264,7 @@ func parseRequest(b io.Reader) (*RequestEnvelope, error) {
 	if err := jsoniter.Unmarshal(payload, req); err != nil {
 		return nil, err
 	}
+
 	return req, nil
 }
 

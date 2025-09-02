@@ -92,9 +92,11 @@ func Break(strength BreakStrength, time string) string {
 	if strength != "" {
 		params = append(params, `strength="`+string(strength)+`"`)
 	}
+
 	if time != "" {
 		params = append(params, `time="`+time+`"`)
 	}
+
 	return fmt.Sprintf(`<break%s/>`, strings.Join(params, " "))
 }
 
@@ -116,6 +118,7 @@ func UseEmphasis(level EmphasisLevel, text string) string {
 	if level != "" {
 		params = append(params, `level="`+string(level)+`"`)
 	}
+
 	return fmt.Sprintf(`<emphasis%s>%s</emphasis>`, strings.Join(params, " "), text)
 }
 
@@ -186,12 +189,15 @@ func Prosody(rate ProsodyRate, pitch ProsodyPitch, volume ProsodyVolume, text st
 	if rate != "" {
 		params = append(params, `rate="`+string(rate)+`"`)
 	}
+
 	if pitch != "" {
 		params = append(params, `pitch="`+string(pitch)+`"`)
 	}
+
 	if volume != "" {
 		params = append(params, `volume="`+string(volume)+`"`)
 	}
+
 	return fmt.Sprintf(`<prosody%s>%s</prosody>`, strings.Join(params, " "), text)
 }
 
@@ -241,6 +247,7 @@ func SayAs(interpretAs SayAsInterpretAs, format, text string) string {
 	if interpretAs == SayAsInterpretAsDate && format != "" {
 		return `<say-as interpret-as="` + string(interpretAs) + `" format="` + format + `">` + text + `</say-as>`
 	}
+
 	return `<say-as interpret-as="` + string(interpretAs) + `">` + text + `</say-as>`
 }
 

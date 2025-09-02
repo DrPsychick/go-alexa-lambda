@@ -48,18 +48,24 @@ func (m *modelBuilder) WithDelegationStrategy(strategy string) *modelBuilder {
 		m.error = fmt.Errorf("unsupported 'delegation': %s", strategy)
 		return m
 	}
+
 	m.delegation = strategy
+
 	return m
 }
 
 // WithLocale creates and sets a new locale.
 func (m *modelBuilder) WithLocale(locale, invocation string) *modelBuilder {
 	loc := l10n.NewLocale(locale)
-	if err := m.registry.Register(loc); err != nil {
+
+	err := m.registry.Register(loc)
+	if err != nil {
 		m.error = err
 		return m
 	}
+
 	loc.Set(m.invocation, []string{invocation})
+
 	return m
 }
 
@@ -68,6 +74,7 @@ func (m *modelBuilder) WithIntent(name string) *modelBuilder {
 	i := NewModelIntentBuilder(name).
 		WithLocaleRegistry(m.registry)
 	m.intents[name] = i
+
 	return m
 }
 
@@ -76,6 +83,7 @@ func (m *modelBuilder) WithType(name string) *modelBuilder {
 	t := NewModelTypeBuilder(name).
 		WithLocaleRegistry(m.registry)
 	m.types[name] = t
+
 	return m
 }
 
@@ -83,6 +91,7 @@ func (m *modelBuilder) WithType(name string) *modelBuilder {
 func (m *modelBuilder) WithElicitationSlotPrompt(intent, slot string) *modelBuilder {
 	// intent and slot must exist!
 	var sl *modelSlotBuilder
+
 	for _, i := range m.intents {
 		for _, s := range i.slots {
 			if i.name == intent && s.name == slot {
@@ -91,6 +100,7 @@ func (m *modelBuilder) WithElicitationSlotPrompt(intent, slot string) *modelBuil
 			}
 		}
 	}
+
 	if sl == nil {
 		m.error = fmt.Errorf("no matching intent slot: %s-%s", intent, slot)
 		return m
@@ -102,6 +112,7 @@ func (m *modelBuilder) WithElicitationSlotPrompt(intent, slot string) *modelBuil
 
 	// link slot to prompt
 	sl.WithElicitationPrompt(p.id)
+
 	return m
 }
 
@@ -109,6 +120,7 @@ func (m *modelBuilder) WithElicitationSlotPrompt(intent, slot string) *modelBuil
 func (m *modelBuilder) WithConfirmationSlotPrompt(intent, slot string) *modelBuilder {
 	// intent and slot must exist!
 	var sl *modelSlotBuilder
+
 	for _, i := range m.intents {
 		for _, s := range i.slots {
 			if i.name == intent && s.name == slot {
@@ -117,6 +129,7 @@ func (m *modelBuilder) WithConfirmationSlotPrompt(intent, slot string) *modelBui
 			}
 		}
 	}
+
 	if sl == nil {
 		m.error = fmt.Errorf("no matching intent slot: %s-%s", intent, slot)
 		return nil
@@ -128,6 +141,7 @@ func (m *modelBuilder) WithConfirmationSlotPrompt(intent, slot string) *modelBui
 
 	// link slot to prompt
 	sl.WithConfirmationPrompt(p.id)
+
 	return m
 }
 
@@ -150,6 +164,7 @@ func (m *modelBuilder) WithConfirmationSlotPrompt(intent, slot string) *modelBui
 func (m *modelBuilder) WithValidationSlotPrompt(slot, t string, valuesKey ...string) *modelBuilder {
 	// slot must exist!
 	var sl *modelSlotBuilder
+
 	for _, i := range m.intents {
 		for _, s := range i.slots {
 			if s.name == slot {
@@ -158,6 +173,7 @@ func (m *modelBuilder) WithValidationSlotPrompt(slot, t string, valuesKey ...str
 			}
 		}
 	}
+
 	if sl == nil {
 		m.error = fmt.Errorf("no matching intent slot: %s", slot)
 		return nil
@@ -169,6 +185,7 @@ func (m *modelBuilder) WithValidationSlotPrompt(slot, t string, valuesKey ...str
 
 	// link slot to prompt
 	sl.WithValidationRule(t, p.id, valuesKey...)
+
 	return m
 }
 
@@ -183,6 +200,7 @@ func (m *modelBuilder) Intents() []string {
 	for n := range m.intents {
 		list = append(list, n)
 	}
+
 	return list
 }
 
@@ -215,6 +233,7 @@ func (m *modelBuilder) Build() (map[string]*Model, error) {
 	if m.error != nil {
 		return nil, m.error
 	}
+
 	ams := make(map[string]*Model)
 
 	// build model for each locale registered
@@ -223,16 +242,19 @@ func (m *modelBuilder) Build() (map[string]*Model, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		ams[l.GetName()] = m
 	}
+
 	return ams, nil
 }
 
 // BuildLocale generates a Model for the locale.
-func (m *modelBuilder) BuildLocale(locale string) (*Model, error) {
+func (m *modelBuilder) BuildLocale(locale string) (*Model, error) { //nolint:funlen
 	if m.error != nil {
 		return nil, m.error
 	}
+
 	loc, err := m.registry.Resolve(locale)
 	if err != nil {
 		return &Model{}, err
@@ -247,23 +269,28 @@ func (m *modelBuilder) BuildLocale(locale string) (*Model, error) {
 	}
 
 	mts := []ModelType{}
+
 	for _, t := range m.types {
 		mt, err := t.Build(locale)
 		if err != nil {
 			return &Model{}, err
 		}
+
 		mts = append(mts, mt)
 	}
+
 	am.Model.Language.Types = mts
 
 	// add prompts - only if we have intents with slots
 	// TODO: "Add...Prompt" should not fail, it should fail during build()!
 	am.Model.Prompts = []ModelPrompt{}
+
 	for _, p := range m.prompts {
 		mp, err := p.BuildLocale(locale)
 		if err != nil {
 			return &Model{}, err
 		}
+
 		am.Model.Prompts = append(am.Model.Prompts, mp)
 	}
 
@@ -273,11 +300,13 @@ func (m *modelBuilder) BuildLocale(locale string) (*Model, error) {
 	if m.delegation != "" {
 		am.Model.Dialog.Delegation = m.delegation
 	}
+
 	for _, i := range m.intents {
 		li, err := i.BuildLanguageIntent(locale)
 		if err != nil {
 			return &Model{}, err
 		}
+
 		am.Model.Language.Intents = append(am.Model.Language.Intents, li)
 
 		// only needed for intents with slots
@@ -286,9 +315,11 @@ func (m *modelBuilder) BuildLocale(locale string) (*Model, error) {
 			if err != nil {
 				return &Model{}, err
 			}
+
 			am.Model.Dialog.Intents = append(am.Model.Dialog.Intents, di)
 		}
 	}
+
 	return am, nil
 }
 
@@ -333,7 +364,9 @@ func (i *modelIntentBuilder) WithLocaleSamples(locale string, samples []string) 
 		i.error = err
 		return i
 	}
+
 	loc.Set(i.samplesName, samples)
+
 	return i
 }
 
@@ -342,6 +375,7 @@ func (i *modelIntentBuilder) WithSlot(name, typeName string) *modelIntentBuilder
 	sb := NewModelSlotBuilder(i.name, name, typeName).
 		WithLocaleRegistry(i.registry)
 	i.slots[name] = sb
+
 	return i
 }
 
@@ -356,13 +390,16 @@ func (i *modelIntentBuilder) WithDelegation(d string) *modelIntentBuilder {
 		i.error = fmt.Errorf("unsupported 'delegation': %s", d)
 		return i
 	}
+
 	i.delegation = d
+
 	return i
 }
 
 // WithConfirmation sets the dialog confirmation for the intent.
 func (i *modelIntentBuilder) WithConfirmation(c bool) *modelIntentBuilder {
 	i.confirmation = c
+
 	return i
 }
 
@@ -389,13 +426,16 @@ func (i *modelIntentBuilder) BuildLanguageIntent(locale string) (ModelIntent, er
 	}
 
 	mss := []ModelSlot{}
+
 	for _, s := range i.slots {
 		is, err := s.BuildIntentSlot(locale)
 		if err != nil {
 			return ModelIntent{}, err
 		}
+
 		mss = append(mss, is)
 	}
+
 	mi.Slots = mss
 
 	return mi, nil
@@ -409,14 +449,18 @@ func (i *modelIntentBuilder) BuildDialogIntent(locale string) (DialogIntent, err
 		Confirmation: i.confirmation,
 	}
 	dis := []DialogIntentSlot{}
+
 	for _, s := range i.slots {
 		ds, err := s.BuildDialogSlot(locale)
 		if err != nil {
 			return DialogIntent{}, err
 		}
+
 		dis = append(dis, ds)
 	}
+
 	di.Slots = dis
+
 	return di, nil
 }
 
@@ -462,7 +506,9 @@ func (s *modelSlotBuilder) WithLocaleSamples(locale string, samples []string) *m
 	if err != nil {
 		return s
 	}
+
 	loc.Set(s.samplesName, samples)
+
 	return s
 }
 
@@ -476,6 +522,7 @@ func (s *modelSlotBuilder) WithConfirmation(c bool) *modelSlotBuilder {
 func (s *modelSlotBuilder) WithConfirmationPrompt(id string) *modelSlotBuilder {
 	s.withConfirmation = true
 	s.confirmationPrompt = id
+
 	return s
 }
 
@@ -489,6 +536,7 @@ func (s *modelSlotBuilder) WithElicitation(e bool) *modelSlotBuilder {
 func (s *modelSlotBuilder) WithElicitationPrompt(id string) *modelSlotBuilder {
 	s.withElicitation = true
 	s.elicitationPrompt = id
+
 	return s
 }
 
@@ -498,7 +546,9 @@ func (s *modelSlotBuilder) WithValidationRule(t, prompt string, valuesKey ...str
 		s.validationRules = NewModelValidationRulesBuilder().
 			WithLocaleRegistry(s.registry)
 	}
+
 	s.validationRules.WithRule(t, prompt, valuesKey...)
+
 	return s
 }
 
@@ -508,11 +558,13 @@ func (s *modelSlotBuilder) BuildIntentSlot(locale string) (ModelSlot, error) {
 	if err != nil {
 		return ModelSlot{}, err
 	}
+
 	ms := ModelSlot{
 		Name: s.name,
 		Type: s.typeName,
 	}
 	ms.Samples = l.GetAll(s.samplesName)
+
 	return ms, nil
 }
 
@@ -521,25 +573,31 @@ func (s *modelSlotBuilder) BuildDialogSlot(locale string) (DialogIntentSlot, err
 	if _, err := s.registry.Resolve(locale); err != nil {
 		return DialogIntentSlot{}, err
 	}
+
 	ds := DialogIntentSlot{
 		Name:         s.name,
 		Type:         s.typeName,
 		Confirmation: s.withConfirmation,
 		Elicitation:  s.withElicitation,
 	}
+
 	if s.confirmationPrompt != "" {
 		ds.Prompts.Confirmation = s.confirmationPrompt
 	}
+
 	if s.elicitationPrompt != "" {
 		ds.Prompts.Elicitation = s.elicitationPrompt
 	}
+
 	if s.validationRules != nil {
 		vs, err := s.validationRules.BuildRules(locale)
 		if err != nil {
 			return ds, err
 		}
+
 		ds.Validations = vs
 	}
+
 	return ds, nil
 }
 
@@ -577,7 +635,9 @@ func (t *modelTypeBuilder) WithLocaleValues(locale string, values []string) *mod
 	if err != nil {
 		return t
 	}
+
 	loc.Set(t.valuesName, values)
+
 	return t
 }
 
@@ -587,10 +647,12 @@ func (t *modelTypeBuilder) Build(locale string) (ModelType, error) {
 	if err != nil {
 		return ModelType{}, err
 	}
+
 	tvs := []TypeValue{}
 	for _, v := range loc.GetAll(t.valuesName) {
 		tvs = append(tvs, TypeValue{Name: NameValue{Value: v}})
 	}
+
 	return ModelType{Name: t.name, Values: tvs}, nil
 }
 
@@ -628,12 +690,15 @@ func (v *modelValidationRulesBuilder) WithRule(t, p string, valuesKey ...string)
 	if len(valuesKey) > 0 {
 		vr.valuesKey = valuesKey[0]
 	}
+
 	v.rules = append(v.rules, vr)
+
 	return v
 }
 
 func (v *modelValidationRulesBuilder) BuildRules(locale string) ([]SlotValidation, error) {
 	sv := []SlotValidation{}
+
 	loc, err := v.registry.Resolve(locale)
 	if err != nil {
 		return sv, err
@@ -659,6 +724,7 @@ func (v *modelValidationRulesBuilder) BuildRules(locale string) ([]SlotValidatio
 
 		sv = append(sv, val)
 	}
+
 	return sv, nil
 }
 
@@ -718,6 +784,7 @@ func (p *ModelPromptBuilder) WithVariation(varType string) *ModelPromptBuilder {
 	v := NewPromptVariations(p.intent, p.slot, p.promptType, varType).
 		WithLocaleRegistry(p.registry)
 	p.variations[varType] = v
+
 	return p
 }
 
@@ -733,6 +800,7 @@ func (p *ModelPromptBuilder) BuildLocale(locale string) (ModelPrompt, error) {
 			"prompt '%s' requires variations (%s)",
 			p.id, locale)
 	}
+
 	mp := ModelPrompt{
 		ID:         p.id,
 		Variations: []PromptVariation{},
@@ -742,8 +810,10 @@ func (p *ModelPromptBuilder) BuildLocale(locale string) (ModelPrompt, error) {
 		if err != nil {
 			return ModelPrompt{}, err
 		}
+
 		mp.Variations = append(mp.Variations, pv...)
 	}
+
 	return mp, nil
 }
 
@@ -762,6 +832,7 @@ func NewPromptVariations(intent, slot, promptType, varType string) *promptVariat
 	if varType == "PlainText" {
 		t = l10n.KeyPostfixText
 	}
+
 	return &promptVariationsBuilder{
 		registry:   l10n.NewRegistry(),
 		intent:     intent,
@@ -784,13 +855,16 @@ func (v *promptVariationsBuilder) WithVariation(varType string) *promptVariation
 	if varType == "PlainText" {
 		t = l10n.KeyPostfixText
 	}
+
 	v.vars[varType] = fmt.Sprintf("%s_%s_%s%s", v.intent, v.slot, v.promptType, t)
+
 	return v
 }
 
 // WithTypeValue sets valueName as the lookup key for the varType.
 func (v *promptVariationsBuilder) WithTypeValue(varType, valueName string) *promptVariationsBuilder {
 	v.vars[varType] = valueName
+
 	return v
 }
 
@@ -801,7 +875,9 @@ func (v *promptVariationsBuilder) WithLocaleTypeValue(locale, varType string, va
 		v.error = err
 		return v
 	}
+
 	loc.Set(v.vars[varType], values)
+
 	return v
 }
 
@@ -811,6 +887,7 @@ func (v *promptVariationsBuilder) BuildLocale(locale string) ([]PromptVariation,
 	if v.error != nil {
 		return vs, v.error
 	}
+
 	loc, err := v.registry.Resolve(locale)
 	if err != nil {
 		return vs, err
@@ -830,10 +907,12 @@ func (v *promptVariationsBuilder) BuildLocale(locale string) ([]PromptVariation,
 			})
 		}
 	}
+
 	if len(vs) == 0 {
 		return []PromptVariation{}, fmt.Errorf(
 			"prompt requires variations with values (%s: %s_%s_%s)",
 			locale, v.intent, v.slot, v.promptType)
 	}
+
 	return vs, nil
 }
