@@ -114,7 +114,9 @@ func (b *ResponseBuilder) With(resp Response) {
 			LargeImageURL: fmt.Sprintf(resp.Image, "large"),
 		})
 	}
+
 	b.WithSimpleCard(resp.Title, resp.Text)
+
 	if resp.Speech != "" {
 		if resp.Reprompt {
 			b.WithReprompt(resp.Speech)
@@ -122,6 +124,7 @@ func (b *ResponseBuilder) With(resp Response) {
 			b.WithSpeech(resp.Speech)
 		}
 	}
+
 	b.WithShouldEndSession(resp.End)
 }
 
@@ -135,6 +138,7 @@ func (b *ResponseBuilder) WithSpeech(text string) *ResponseBuilder {
 			Type: "SSML",
 			SSML: text,
 		}
+
 		return b
 	}
 
@@ -142,6 +146,7 @@ func (b *ResponseBuilder) WithSpeech(text string) *ResponseBuilder {
 		Type: "PlainText",
 		Text: text,
 	}
+
 	return b
 }
 
@@ -152,6 +157,7 @@ func (b *ResponseBuilder) WithReprompt(text string) *ResponseBuilder {
 			Type: "SSML",
 			SSML: text,
 		}
+
 		return b
 	}
 
@@ -159,6 +165,7 @@ func (b *ResponseBuilder) WithReprompt(text string) *ResponseBuilder {
 		Type: "PlainText",
 		Text: text,
 	}
+
 	return b
 }
 
@@ -224,13 +231,16 @@ func (b *ResponseBuilder) Build() *ResponseEnvelope {
 			ShouldEndSession: b.shouldEndSession,
 		},
 	}
+
 	if b.reprompt != nil {
 		r.Response.Reprompt = &Reprompt{
 			OutputSpeech: b.reprompt,
 		}
 	}
+
 	if b.canFulfillIntent != nil {
 		r.Response.CanFulfillIntent = b.canFulfillIntent
 	}
+
 	return r
 }

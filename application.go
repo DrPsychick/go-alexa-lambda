@@ -39,6 +39,7 @@ func GetLocaleWithFallback(registry l10n.LocaleRegistry, locale string) (l10n.Lo
 			}
 		}
 	}
+
 	return loc, Response{}
 }
 
@@ -51,9 +52,12 @@ type ResponseError interface {
 
 // HandleError handles default and ResponseErrors. Returns true if the error was handled.
 func HandleError(b *ResponseBuilder, loc l10n.LocaleInstance, err error) bool {
-	var resp Response
-	var respErr ResponseError
-	var l10nErr l10n.LocaleError
+	var (
+		resp    Response
+		respErr ResponseError
+		l10nErr l10n.LocaleError
+	)
+
 	switch {
 	case loc == nil:
 		resp = Response{
@@ -89,6 +93,7 @@ func HandleError(b *ResponseBuilder, loc l10n.LocaleInstance, err error) bool {
 	// }
 
 	b.With(resp)
+
 	return true
 }
 
@@ -99,11 +104,13 @@ func CheckForLocaleError(loc l10n.LocaleInstance) error {
 		return nil
 	}
 
-	lastErr := errs[len(errs)-1] //nolint:ifshort,nolintlint
+	lastErr := errs[len(errs)-1] //nolint:nolintlint
+
 	var l10nErr l10n.LocaleError
 	if errors.As(lastErr, &l10nErr) {
 		return TranslationError{l10nErr.GetLocale(), l10nErr.GetKey()}
 	}
+
 	return TextError{loc.GetName(), lastErr.Error()}
 }
 

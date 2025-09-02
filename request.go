@@ -16,6 +16,7 @@ func (e NotFoundError) Error() string {
 	if e.name == "" {
 		return fmt.Sprintf("element '%s' was not found in the request", e.element)
 	}
+
 	return fmt.Sprintf("element '%s' with name '%s' was not found in the request", e.element, e.name)
 }
 
@@ -116,6 +117,7 @@ func (r *RequestEnvelope) IntentName() string {
 	if err != nil {
 		return ""
 	}
+
 	return i.Name
 }
 
@@ -273,6 +275,7 @@ func (r *RequestEnvelope) RequestType() RequestType {
 	if r.Request == nil {
 		return ""
 	}
+
 	return r.Request.Type
 }
 
@@ -281,6 +284,7 @@ func (r *RequestEnvelope) IsIntentRequest() bool {
 	if r.Request == nil || r.Request.Type == "" {
 		return false
 	}
+
 	return r.Request.Type == TypeIntentRequest
 }
 
@@ -289,6 +293,7 @@ func (r *RequestEnvelope) RequestLocale() string {
 	if r.Request == nil {
 		return ""
 	}
+
 	return string(r.Request.Locale)
 }
 
@@ -377,6 +382,7 @@ func (r *RequestEnvelope) SessionID() string {
 	if r.Session == nil {
 		return ""
 	}
+
 	return r.Session.SessionID
 }
 
@@ -385,6 +391,7 @@ func (r *RequestEnvelope) SessionUser() (*ContextUser, error) {
 	if r.Session == nil || r.Session.User == nil {
 		return nil, &NotFoundError{"Session.User", ""}
 	}
+
 	return r.Session.User, nil
 }
 
@@ -433,6 +440,7 @@ func (r *RequestEnvelope) ContextPerson() (*ContextSystemPerson, error) {
 	if err != nil || s.Person == nil {
 		return &ContextSystemPerson{}, &NotFoundError{"System.Person", ""}
 	}
+
 	return r.Context.System.Person, nil
 }
 
@@ -442,6 +450,7 @@ func (r *RequestEnvelope) ContextUser() (*ContextUser, error) {
 	if err != nil || s.User == nil {
 		return &ContextUser{}, &NotFoundError{"System.User", ""}
 	}
+
 	return r.Context.System.User, nil
 }
 

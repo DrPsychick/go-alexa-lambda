@@ -134,6 +134,7 @@ func (e MissingPlaceholderError) Error() string {
 	if e.Placeholder == "" {
 		return fmt.Sprintf("locale %s: key '%s' is missing a placeholder in translation", e.Locale, e.Key)
 	}
+
 	return fmt.Sprintf("locale %s: key '%s' is missing placeholder '%s' in translation", e.Locale, e.Key, e.Placeholder)
 }
 
@@ -217,6 +218,7 @@ func (r *Registry) Register(l LocaleInstance, opts ...RegisterFunc) error {
 	if l.GetName() == "" {
 		return errors.New("cannot register locale with no name")
 	}
+
 	if _, ok := r.locales[l.GetName()]; ok {
 		return fmt.Errorf("locale %s already registered", l.GetName())
 	}
@@ -247,7 +249,9 @@ func (r *Registry) SetDefault(locale string) error {
 	if _, err := r.Resolve(locale); err != nil {
 		return err
 	}
+
 	r.defaultLocale = locale
+
 	return nil
 }
 
@@ -262,6 +266,7 @@ func (r *Registry) Resolve(locale string) (LocaleInstance, error) {
 	if !ok {
 		return nil, fmt.Errorf("locale '%s' not found", locale)
 	}
+
 	return l, nil
 }
 
@@ -303,7 +308,9 @@ func (l *Locale) Get(key string, args ...interface{}) string {
 			l.errors = append(l.errors, err)
 		}
 	}
+
 	l.appendErrorMissingParam(key, []string{t})
+
 	return t
 }
 
@@ -320,7 +327,9 @@ func (l *Locale) GetAny(key string, args ...interface{}) string {
 			l.errors = append(l.errors, err)
 		}
 	}
+
 	l.appendErrorMissingParam(key, []string{t})
+
 	return t
 }
 
@@ -337,7 +346,9 @@ func (l *Locale) GetAll(key string, args ...interface{}) []string {
 			l.errors = append(l.errors, err)
 		}
 	}
+
 	l.appendErrorMissingParam(key, t)
+
 	return t
 }
 
@@ -369,6 +380,7 @@ func (s Snippets) GetFirst(key string, args ...interface{}) (string, error) {
 	if !ok || len(s[key]) == 0 {
 		return "", NoTranslationError{"", key, ""}
 	}
+
 	return fmt.Sprintf(s[key][0], args...), nil
 }
 
@@ -378,11 +390,14 @@ func (s Snippets) GetAny(key string, args ...interface{}) (string, error) {
 	if !ok || len(s[key]) == 0 {
 		return "", NoTranslationError{"", key, ""}
 	}
+
 	if len(s[key]) == 1 {
 		return fmt.Sprintf(s[key][0], args...), nil
 	}
+
 	l := len(s[key])
 	r := rand.Intn(l) //nolint:gosec
+
 	return fmt.Sprintf(s[key][r], args...), nil
 }
 
@@ -392,9 +407,11 @@ func (s Snippets) GetAll(key string, args ...interface{}) ([]string, error) {
 	if !ok || len(s[key]) == 0 {
 		return []string{}, NoTranslationError{"", key, ""}
 	}
+
 	r := make([]string, len(s[key]))
 	for i, v := range s[key] {
 		r[i] = fmt.Sprintf(v, args...)
 	}
+
 	return r, nil
 }
