@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.6
 
 require (
-	github.com/aws/aws-lambda-go v1.49.0
+	github.com/aws/aws-lambda-go v1.50.0
 	github.com/hamba/logger/v2 v2.9.0
 	github.com/hamba/statter/v2 v2.8.0
 	github.com/json-iterator/go v1.1.12
