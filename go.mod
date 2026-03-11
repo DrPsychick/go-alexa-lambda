@@ -1,11 +1,11 @@
 module github.com/drpsychick/go-alexa-lambda
 
-go 1.25.0
+go 1.25.8
 
 require (
 	github.com/aws/aws-lambda-go v1.50.0
 	github.com/hamba/logger/v2 v2.9.1
-	github.com/hamba/statter/v2 v2.8.0
+	github.com/hamba/statter/v2 v2.8.1
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.11.1
 )
@@ -14,6 +14,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
+	github.com/go4org/hashtriemap v0.0.0-20251130024219-545ba229f689 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

@@ -11,6 +11,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-stack/stack v1.8.1 h1:ntEHSVwIt7PNXNpgPmVfMrNhLtgjlmnZha2kOpuRiDw=
 github.com/go-stack/stack v1.8.1/go.mod h1:dcoOX6HbPZSZptuspn9bctJ+N/CnF5gGygcUP3XYfe4=
+github.com/go4org/hashtriemap v0.0.0-20251130024219-545ba229f689 h1:0psnKZ+N2IP43/SZC8SKx6OpFJwLmQb9m9QyV9BC2f8=
+github.com/go4org/hashtriemap v0.0.0-20251130024219-545ba229f689/go.mod h1:OGmRfY/9QEK2P5zCRtmqfbCF283xPkU2dvVA4MvbvpI=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
@@ -24,6 +26,8 @@ github.com/hamba/statter/v2 v2.7.0 h1:9CnjJ5PcxOzIVJSAFSJm0lnUUBjTo3psV9nn+yZ1cM
 github.com/hamba/statter/v2 v2.7.0/go.mod h1:SJPj0HCM+z7GxnoG+YBgN87SP0GVJ5YPjqHINrgqFYE=
 github.com/hamba/statter/v2 v2.8.0 h1:5rLx+e/wODnvtkzpmEQim4hHcWEJbeI+KJuPHTkQCLQ=
 github.com/hamba/statter/v2 v2.8.0/go.mod h1:V3pzf51ZQG5tpVQdbbkoTm3mA5GtxeQ30Yr+GPUa3Is=
+github.com/hamba/statter/v2 v2.8.1 h1:Y6mEOXPxBLfBvKzb31BjPhtSLyza/ghFu+Kez7t0CaY=
+github.com/hamba/statter/v2 v2.8.1/go.mod h1:DTwNCeix6cqciNDhT8CzzKa5k2nCWPWGjIAru4jRtpA=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
