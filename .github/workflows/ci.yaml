@@ -11,7 +11,7 @@ jobs:
     name: Lint code
     runs-on: ubuntu-latest
     env:
-      GOLANGCI_LINT_VERSION: v2.4.0 # github-releases:golangci/golangci-lint
+      GOLANGCI_LINT_VERSION: v2.13.2 # github-releases:golangci/golangci-lint
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - name: Set up Go
