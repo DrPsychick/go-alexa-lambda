@@ -7,7 +7,7 @@ require (
 	github.com/hamba/logger/v2 v2.9.1
 	github.com/hamba/statter/v2 v2.8.1
 	github.com/json-iterator/go v1.1.12
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.1
 )
 
 require (
@@ -21,5 +21,6 @@ require (
 	github.com/valyala/fastrand v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.42.0 // indirect
 	go.opentelemetry.io/otel/trace v1.42.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
